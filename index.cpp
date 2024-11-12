@@ -173,4 +173,22 @@ void ExclusaoLogicaDeAutor (void) {
   }
 }
 
+void ExclusaoFisicaTodosDeAutor (void) {
+  FILE *ptr = fopen ("biblioteca/autor.dat", "rb");
+  Autor AuxAutor;
+
+  if (ptr == NULL)
+    printf ("Erro de abertura!!\n");
+  else {
+    fread (&AuxAutor, sizeof(Autor), 1, ptr);
+    FILE *ptrTemp = fopen("biblioteca/autorTemp.dat", "wb");
+    while (!feof(ptr)) {
+      if (AuxAutor.excluido)
+        fwrite(&AuxAutor, sizeof(Autor), 1, ptrTemp);
+      fread (&AuxAutor, sizeof(Autor), 1, ptr);
+    }
+
+  }
+}
+
 int main() {}

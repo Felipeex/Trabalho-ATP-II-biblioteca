@@ -13,7 +13,7 @@
 - [x] Deve ser possivel cadastrar um autor
 - [x] Deve ser possivel editar um autor
 - [x] Deve ser possivel excluir um autor logicamente
-- [ ] Deve ser possivel excluir um autor fisicamente
+- [x] Deve ser possivel excluir um autor fisicamente
 - [ ] Deve ser possivel consultar todos os dados dos autores
 
 ### Emprestimo @Felipe
