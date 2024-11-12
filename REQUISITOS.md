@@ -2,7 +2,7 @@
 
 ### Livro - @Lucas
 
-- [ ] Deve ser possivel cadastrar um livro
+- [x] Deve ser possivel cadastrar um livro
 - [ ] Deve ser possivel editar um livro
 - [ ] Deve ser possivel excluir um livro logicamente
 - [ ] Deve ser possivel excluir um livro fisicamente
