@@ -1,6 +1,6 @@
 # Requisitos Funcionais
 
-### Livro - @Felipe
+### Livro - @Lucas
 
 - [ ] Deve ser possivel cadastrar um livro
 - [ ] Deve ser possivel editar um livro

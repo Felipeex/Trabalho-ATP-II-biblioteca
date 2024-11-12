@@ -70,6 +70,9 @@ void AlterarAutor(void);
 void ExclusaoLogicaDeAutor (void);
 void ExclusaoFisicaTodosDeAutor (void);
 
+//Livro Funções 
+void CadastrarLivro (void);
+
 // Outras
 int menu(char options[][100], int studentsLogicSize);
 void limparLinhas(int quantidadeDeOpcoes);
@@ -124,6 +127,32 @@ void CadastrarAutor (void) {
   }
   fclose (ptr);
 } 
+
+void CadastrarLivro (void) {
+  FILE *ptr;
+  Livro LivroAux;
+
+  ptr = fopen ("biblioteca/livro.dat", "ab+");
+  if (ptr == NULL)
+    LivroAux.id = 0;
+  printf ("Titulo do Livro: ");
+  fflush(stdin);
+  gets(LivroAux.titulo);
+  while (strcasecmp(LivroAux.titulo, "\0") != 0) {
+    LivroAux.id++;
+    printf ("Ano de Publicação do Livro: ");
+    fflush(stdin);
+    scanf ("%d", &LivroAux.anoPublicacao);
+    LivroAux.excluido = 1;
+
+    fwrite(&LivroAux, sizeof(Livro), 1, ptr);
+
+    printf ("Titulo do Livro: ");
+    fflush(stdin);
+    gets(LivroAux.titulo);
+  }
+  fclose(ptr);
+}
 
 void AlterarAutor(void) {
   FILE *ptr;
@@ -230,6 +259,27 @@ void ExclusaoFisicaTodosDeAutor (void) {
     printf ("Dados Excluidos Fisicamente\n");
   }
 }
+
+// void ConsultaAutor (void) {
+//   FILE *ptr = fopen ("biblioteca/autor.dat", "rb");
+//   int pos;
+//   Autor AuxAutor;
+
+//   if (ptr == NULL)
+//     printf ("Erro de Abertura\n");
+//   else {
+//     printf ("ID do Autor: ");
+//     scanf ("%d", &AuxAutor.id);
+//     while (AuxAutor.id != 0) {
+//       pos = BuscaAutorId (ptr, AuxAutor.id);
+//       if (pos == -1)
+//         printf("Autor desconhecido!!\n");
+//       else {
+
+//       }
+//     }
+//   }
+// }
 
 int menu(char opcoes[][100], int quantidadeDeOpcoes) {
   int opcaoSelecionada = 0;
