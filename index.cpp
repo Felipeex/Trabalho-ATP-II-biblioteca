@@ -133,4 +133,44 @@ void AlterarAutor(void) {
   }
 }
 
+void ExclusaoLogicaDeAutor (void) {
+  FILE *ptr = fopen ("biblioteca/autor.dat", "rb+");
+  int pos;
+  Autor AutorAux;
+
+  if (ptr == NULL)
+    printf ("Erro na abertura do arquivo\n");
+  else {
+    printf ("ID do Autor: ");
+    scanf("%d", &AutorAux.id);
+    while (AutorAux.id != 0) {
+      pos = BuscaAutorId(ptr, AutorAux.id);
+      if (pos == -1)
+        printf ("Autor Desconhecido!!\n");
+      else {
+        fseek(ptr, pos, 0);
+        fread(&AutorAux, sizeof(Autor), 1, ptr);
+        printf ("<<<<< Dados do Autor >>>>\n");
+        printf ("ID: %d\n", AutorAux.id);
+        printf ("Nome: %s\n", AutorAux.nome);
+        printf ("Nacionalidade: %s\n", AutorAux.nacionalidade);
+        printf ("--------------------------------------------\n");
+        printf ("Confirma a Exclusão? (S/N)");
+        if (toupper(getch()) == 'S') {
+          fseek(ptr, pos, 0);
+          AutorAux.excluido = 0;
+          fwrite(&AutorAux, sizeof(Autor), 1, ptr);
+          printf ("Autor Excluído Logicamente\n");
+        }
+        else
+          printf ("Exclusão Cancelada!!\n");
+      }
+      printf ("[0] - SAIR\n");
+      printf ("ID do Autor: ");
+      scanf("%d", &AutorAux.id);
+    }
+    fclose (ptr);
+  }
+}
+
 int main() {}
