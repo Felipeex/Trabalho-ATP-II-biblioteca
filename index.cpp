@@ -72,6 +72,8 @@ void ExclusaoFisicaTodosDeAutor (void);
 
 //Livro Funções 
 void CadastrarLivro (void);
+void AlterarLivro (void);
+int BuscaLivroId (FILE *ptr, int Id);
 
 // Outras
 int menu(char options[][100], int studentsLogicSize);
@@ -84,6 +86,21 @@ int main() {
   };
 
   menu(opcoesPrincipais, 2);
+}
+
+int BuscaLivroId (FILE *ptr, int Id) {
+  Livro Aux;
+
+  fseek(ptr, 0, SEEK_SET);
+  fread(&Aux, sizeof(Livro), 1, ptr);
+
+  while (!feof(ptr) && (Id != Aux.id || Aux.excluido != 1)) 
+    fread(&Aux, sizeof(Livro), 1, ptr);
+
+  if (!feof(ptr))
+    return ftell(ptr) - sizeof(Livro);
+  else  
+    return -1;
 }
 
 int BuscaAutorId(FILE *ptr, int ID) {
@@ -193,6 +210,49 @@ void AlterarAutor(void) {
       printf ("[0] - SAIR\n");
       printf ("ID do Autor: ");
       scanf ("%d", &id);
+    }
+    fclose(ptr);
+  }
+}
+
+void AlterarLivro (void) {
+  FILE *ptr = fopen ("biblioteca/livro.dat", "rb+");
+  Livro AuxLivro;
+  int pos;
+
+  if (ptr == NULL)
+    printf ("Erro na Abertura do Arquivo!!\n");
+  else {
+    printf ("ID do Livro: ");
+    scanf ("%d", AuxLivro.id);
+    while (AuxLivro.id != 0) {
+      pos = BuscaLivroId (ptr, AuxLivro.id);
+      if (pos == -1)
+        printf ("Livro não cadastrado!!\n");
+      else {
+        fseek(ptr, pos, 0);
+        fread(&AuxLivro, sizeof(Livro), 1, ptr);
+        printf ("Dados Encontrados:");
+        printf ("ID: %d\n", AuxLivro.id);
+        printf ("Titulo do Livro: %s\n", AuxLivro.titulo);
+        printf ("Ano de Publicação: %d", AuxLivro.anoPublicacao);
+        printf ("---------------------------------------------------\n");
+        printf ("Digite o Novo Titulo: ");
+        fflush(stdin);
+        gets(AuxLivro.titulo);
+        printf ("Ano de Publicação: ");
+        scanf ("%d", &AuxLivro.anoPublicacao);
+        printf ("Deseja fazer a Alteração? (S/N)\n");
+        if (toupper(getch()) == 'S') {
+          fseek(ptr, pos, 0);
+          fwrite(&AuxLivro, sizeof(Livro), 1, ptr);
+          printf ("Dados Alterados!!\n");
+        } 
+        else 
+          printf ("Alteraçao cancelada!!\n");
+      }
+      printf ("ID do Livro: ");
+      scanf ("%d", AuxLivro.id);
     }
     fclose(ptr);
   }
