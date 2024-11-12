@@ -1,14 +1,24 @@
+// Padrão
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <locale.h>
 
+// Headers
+#include "./headers/figuras.h"
+#include "./headers/acoes.h"
+
+
 #ifdef __APPLE__
+// Conio Unix
 #include "./lib/conio-unix.h"
 #elif defined(_WIN32) || defined(WIN32)
+// Conio Dos
 #include "./lib/conio-dos.h"
 #endif
+
+#include "./lib/meuconio.h"
 
 struct Data {
   int dia;
@@ -59,6 +69,19 @@ int BuscaAutorId(FILE *ptr, int ID);
 void AlterarAutor(void);
 void ExclusaoLogicaDeAutor (void);
 void ExclusaoFisicaTodosDeAutor (void);
+
+// Outras
+int menu(char options[][100], int studentsLogicSize);
+void limparLinhas(int quantidadeDeOpcoes);
+
+int main() {
+  char opcoesPrincipais[10][100] = {
+    "Primeira opcao",
+    "Segundo opcao"
+  };
+
+  menu(opcoesPrincipais, 2);
+}
 
 int BuscaAutorId(FILE *ptr, int ID) {
   Autor AuxAutor;
@@ -208,4 +231,55 @@ void ExclusaoFisicaTodosDeAutor (void) {
   }
 }
 
-int main() {}
+int menu(char opcoes[][100], int quantidadeDeOpcoes) {
+  int opcaoSelecionada = 0;
+  int acao;
+
+  do {
+    printf("\e[?25l"); // hide cursor
+    limparLinhas(quantidadeDeOpcoes);
+
+    for(int index = 0; index < quantidadeDeOpcoes; index++) {
+
+      if (index == opcaoSelecionada) {
+        textcolor(15);
+        printf("%c %s\n", PONTEIRO, opcoes[opcaoSelecionada]);
+        textcolor(8);
+      } else {
+        textcolor(8);
+        printf("  %s\n", opcoes[index]);
+        textcolor(15);
+      }
+    }
+
+    acao = getch();
+    
+    switch(acao) {
+      case SETA_CIMA_NUMERO:
+        if (opcaoSelecionada + 1 < quantidadeDeOpcoes)
+          opcaoSelecionada++;
+        break;
+      case SETA_BAIXO_NUMERO:
+        if (opcaoSelecionada > 0)
+          opcaoSelecionada--;
+      break;
+    }
+
+  } while(acao != ESC_NUMERO && acao != ENTER_NUMERO);
+
+  printf("\e[?25h");
+  textcolor(15);
+
+  if (acao != 27) {
+    return opcaoSelecionada;
+  }
+
+  return -1;
+}
+
+void limparLinhas(int quantidadeDeOpcoes) {
+  for(int index = 0; index < quantidadeDeOpcoes; index++) {
+    printf("\x1b[1F");
+    printf("\33[2K\r");
+  }
+}

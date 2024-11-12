@@ -1,0 +1,5 @@
+#define SETA_CIMA_NUMERO 80
+#define SETA_BAIXO_NUMERO 72
+#define ENTER_NUMERO 13
+#define ESPACO_NUMERO 8
+#define ESC_NUMERO 27
