@@ -193,7 +193,11 @@ void ExclusaoFisicaTodosDeAutor (void) {
         fwrite(&AuxAutor, sizeof(Autor), 1, ptrTemp);
       fread (&AuxAutor, sizeof(Autor), 1, ptr);
     }
-
+    fclose (ptr);
+    fclose(ptrTemp);
+    remove("biblioteca/autor.dat");
+    rename("biblioteca/autorTemp,dat", "biblioteca/autor.dat");
+    printf ("Dados Excluidos Fisicamente\n");
   }
 }
 
