@@ -53,6 +53,21 @@ struct LivroAutor {
   int excluido;
 };
 
+// FUNÇAO CADASTRAR
+void CadastrarAutor (void);
+
+// FUNÇAO DE BUSCA
+int BuscaAutorId(FILE *ptr, int ID);
+
+//FUNÇAO PARA ALTERAR DADOS
+void AlterarAutor(void);
+
+//FUNÇAO DE EXCLUSAO LOGICA
+void ExclusaoLogicaDeAutor (void);
+
+// FUNÇAO DE EXCLUSAO FISICA
+void ExclusaoFisicaTodosDeAutor (void);
+
 int BuscaAutorId(FILE *ptr, int ID) {
   Autor AuxAutor;
 
