@@ -89,4 +89,48 @@ void CadastrarAutor (void) {
   fclose (ptr);
 } 
 
+void AlterarAutor(void) {
+  FILE *ptr;
+  int id, pos;
+  Autor AuxAutor;
+
+  ptr = fopen ("biblioteca/autor.dat", "rb+");
+  if (ptr == NULL)
+    printf ("Erro na abertura do Arquivo\n");
+  else {
+    printf ("ID do Autor: ");
+    scanf ("%d", &id);
+    while (id != 0) {
+      pos = BuscaAutorId(ptr, id);
+      if (pos == -1)
+        printf ("Autor desconhecido!!\n");
+      else {
+        fseek(ptr, pos, 0);
+        fread (&AuxAutor, sizeof(Autor), 1, ptr);
+        printf ("<<<<< Dados do Autor >>>>\n");
+        printf ("ID: %d\n", id);
+        printf ("Nome: %s\n", AuxAutor.nome);
+        printf ("Nacionalidade: %s\n", AuxAutor.nacionalidade);
+        printf ("--------------------------------------------\n");
+        printf ("Digite o Novo nome do Autor: ");
+        fflush(stdin);
+        gets(AuxAutor.nome);
+        printf ("Digite a nacionalidade do Autor: ");
+        fflush(stdin);
+        gets(AuxAutor.nacionalidade);
+        printf ("Confirma Alteração? (S/N)\n");
+        if (toupper(getch()) == 'S') {
+          fseek(ptr, pos, 0);
+          fwrite(&AuxAutor, sizeof(Autor), 1, ptr);
+          printf ("Dados Alterados!!\n");
+        }
+      }
+      printf ("[0] - SAIR\n");
+      printf ("ID do Autor: ");
+      scanf ("%d", &id);
+    }
+    fclose(ptr);
+  }
+}
+
 int main() {}
