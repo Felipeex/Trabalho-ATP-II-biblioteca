@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <locale.h>
 
-#ifdef __unix__
+#ifdef __APPLE__
 #include "./lib/conio-unix.h"
 #elif defined(_WIN32) || defined(WIN32) 
 #include "./lib/conio-dos.h"
