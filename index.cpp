@@ -16,9 +16,9 @@
 #elif defined(_WIN32) || defined(WIN32)
 // Conio Dos
 #include "./lib/conio-dos.h"
+#include "./lib/meuconio.h"
 #endif
 
-#include "./lib/meuconio.h"
 
 struct Data {
   int dia;
