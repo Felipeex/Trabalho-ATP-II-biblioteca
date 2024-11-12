@@ -1,5 +1,9 @@
 #include <stdio.h>
-
+#include "conio.h"
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <locale.h> 
 struct Data {
   int dia;
   int mes;
@@ -42,5 +46,32 @@ struct LivroAutor {
   int idAutor;
   int excluido;
 };
+
+void CadastrarAutor (void) {
+  FILE *ptr;
+  Autor AutorAux;
+
+  ptr = fopen ("biblioteca/autor.dat", "ab+");
+  
+  if (ptr == NULL)
+    AutorAux.id = 0;
+  printf ("Nome do Autor: ");
+  fflush(stdin);
+  gets(AutorAux.nome);
+  while (strcasecmp(AutorAux.nome, "\0") != 0) {
+    AutorAux.id++;
+    printf ("País de Origem do Autor: ");
+    fflush(stdin);
+    gets(AutorAux.nacionalidade);
+    AutorAux.excluido = 1;
+
+    fwrite (&AutorAux, sizeof(Autor), 1, ptr);
+
+    printf ("Nome do Autor: ");
+    fflush(stdin);
+    gets(AutorAux.nome);
+  }
+  fclose (ptr);
+} 
 
 int main() {}
