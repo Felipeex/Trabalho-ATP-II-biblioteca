@@ -47,12 +47,27 @@ struct LivroAutor {
   int excluido;
 };
 
+int BuscaAutorId (FILE *ptr, int ID) {
+  Autor AuxAutor;
+
+  rewind(ptr);
+  fread(&AuxAutor, sizeof(Autor), 1, ptr);
+
+  while (!feof(ptr) && (ID != AuxAutor.id || AuxAutor.excluido != 1))
+    fread(&AuxAutor, sizeof(Autor), 1, ptr);
+  
+  if (!feof(ptr))
+    return ftell(ptr) - sizeof(Autor);
+  else
+    return -1;
+}
+
 void CadastrarAutor (void) {
   FILE *ptr;
   Autor AutorAux;
 
   ptr = fopen ("biblioteca/autor.dat", "ab+");
-  
+
   if (ptr == NULL)
     AutorAux.id = 0;
   printf ("Nome do Autor: ");

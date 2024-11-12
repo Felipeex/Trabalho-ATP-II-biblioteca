@@ -10,7 +10,7 @@
 
 ### Autor - @Lucas
 
-- [ ] Deve ser possivel cadastrar um autor
+- [x] Deve ser possivel cadastrar um autor
 - [ ] Deve ser possivel editar um autor
 - [ ] Deve ser possivel excluir um autor logicamente
 - [ ] Deve ser possivel excluir um autor fisicamente
