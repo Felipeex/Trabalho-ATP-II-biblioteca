@@ -3,7 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <locale.h> 
+#include <locale.h>
+
+#ifdef __unix__
+#include "./lib/conio-unix.h"
+#elif defined(_WIN32) || defined(WIN32) 
+#include "./lib/conio-dos.h"
+#endif
+
 struct Data {
   int dia;
   int mes;
