@@ -10,7 +10,7 @@
 
 ### Autor - @Lucas
 
-- [x] Deve ser possivel cadastrar um autor
+- [x] Deve ser possivel cadastrar um autor -> https://github.com/Felipeex/Trabalho-ATP-II-biblioteca/commit/3eda57eea5a70bc4f85df2e96efe28f3a6836086#r148998731
 - [x] Deve ser possivel editar um autor
 - [x] Deve ser possivel excluir um autor logicamente
 - [x] Deve ser possivel excluir um autor fisicamente

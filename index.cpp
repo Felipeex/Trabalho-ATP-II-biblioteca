@@ -6,7 +6,7 @@
 
 #ifdef __APPLE__
 #include "./lib/conio-unix.h"
-#elif defined(_WIN32) || defined(WIN32) 
+#elif defined(_WIN32) || defined(WIN32)
 #include "./lib/conio-dos.h"
 #endif
 
@@ -53,7 +53,7 @@ struct LivroAutor {
   int excluido;
 };
 
-int BuscaAutorId (FILE *ptr, int ID) {
+int BuscaAutorId(FILE *ptr, int ID) {
   Autor AuxAutor;
 
   rewind(ptr);
