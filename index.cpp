@@ -88,6 +88,8 @@ int main() {
   menu(opcoesPrincipais, 2);
 }
 
+// Buscas 
+
 int BuscaLivroId (FILE *ptr, int Id) {
   Livro Aux;
 
@@ -117,7 +119,9 @@ int BuscaAutorId(FILE *ptr, int ID) {
   else
     return -1;
 }
+//--------------------------------------------------------------------------------
 
+// Cadastros
 void CadastrarAutor (void) {
   FILE *ptr;
   Autor AutorAux;
@@ -171,6 +175,9 @@ void CadastrarLivro (void) {
   fclose(ptr);
 }
 
+//------------------------------------------------------------------
+
+// Altera
 void AlterarAutor(void) {
   FILE *ptr;
   int id, pos;
@@ -260,6 +267,9 @@ void AlterarLivro (void) {
     printf ("Erro na Abertura do Arquivo!!\n");
 }
 
+//-------------------------------------------------------------------------
+
+// Exclusao Logica
 void ExclusaoLogicaDeAutor (void) {
   FILE *ptr = fopen ("biblioteca/autor.dat", "rb+");
   int pos;
@@ -300,27 +310,6 @@ void ExclusaoLogicaDeAutor (void) {
     printf ("Erro na abertura do arquivo\n");
 }
 
-void ExclusaoFisicaTodosDeAutor (void) {
-  FILE *ptr = fopen ("biblioteca/autor.dat", "rb");
-  Autor AuxAutor;
-  if (ptr != NULL) {
-    fread (&AuxAutor, sizeof(Autor), 1, ptr);
-    FILE *ptrTemp = fopen("biblioteca/autorTemp.dat", "wb");
-    while (!feof(ptr)) {
-      if (!AuxAutor.excluido)
-        fwrite(&AuxAutor, sizeof(Autor), 1, ptrTemp);
-      fread (&AuxAutor, sizeof(Autor), 1, ptr);
-    }
-    fclose (ptr);
-    fclose(ptrTemp);
-    remove("biblioteca/autor.dat");
-    rename("biblioteca/autorTemp,dat", "biblioteca/autor.dat");
-    printf ("Dados Excluidos Fisicamente\n");
-  }  
-  else 
-    printf ("Erro de abertura!!\n");
-}
-
 void ExclusaoLogicaDeLivro (void) {
   FILE *ptr = fopen("biblioteca/livro.dat", "rb+");
   Livro AuxLivro;
@@ -355,6 +344,32 @@ void ExclusaoLogicaDeLivro (void) {
   } else printf ("Erro na Abertura do Arquivo\n");
 }
 
+// ----------------------------------------------------------------
+
+// Exclusao Fisica
+void ExclusaoFisicaTodosDeAutor (void) {
+  FILE *ptr = fopen ("biblioteca/autor.dat", "rb");
+  Autor AuxAutor;
+  if (ptr != NULL) {
+    fread (&AuxAutor, sizeof(Autor), 1, ptr);
+    FILE *ptrTemp = fopen("biblioteca/autorTemp.dat", "wb");
+    while (!feof(ptr)) {
+      if (!AuxAutor.excluido)
+        fwrite(&AuxAutor, sizeof(Autor), 1, ptrTemp);
+      fread (&AuxAutor, sizeof(Autor), 1, ptr);
+    }
+    fclose (ptr);
+    fclose(ptrTemp);
+    remove("biblioteca/autor.dat");
+    rename("biblioteca/autorTemp,dat", "biblioteca/autor.dat");
+    printf ("Dados Excluidos Fisicamente\n");
+  }  
+  else 
+    printf ("Erro de abertura!!\n");
+}
+
+
+
 void ExclusaoFisicaTodosDeLivro (void) {
   FILE *ptr = fopen ("biblioteca/livro.dat", "rb");
   Livro AuxLivro;
@@ -374,6 +389,8 @@ void ExclusaoFisicaTodosDeLivro (void) {
     printf ("Alunos Excluidos");
   }
 }
+
+// -------------------------------------------------------------------------
 
 // void ConsultaAutor (void) {
 //   FILE *ptr = fopen ("biblioteca/autor.dat", "rb");
