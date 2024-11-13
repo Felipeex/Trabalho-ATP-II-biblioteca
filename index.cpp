@@ -91,10 +91,10 @@ int main() {
 int BuscaLivroId (FILE *ptr, int Id) {
   Livro Aux;
 
-  fseek(ptr, 0, SEEK_SET);
+  fseek(ptr, 0, 0);
   fread(&Aux, sizeof(Livro), 1, ptr);
 
-  while (!feof(ptr) && (Id != Aux.id || Aux.excluido != 1)) 
+  while (!feof(ptr) && (Id != Aux.id || Aux.excluido != 0)) 
     fread(&Aux, sizeof(Livro), 1, ptr);
 
   if (!feof(ptr))
@@ -106,10 +106,10 @@ int BuscaLivroId (FILE *ptr, int Id) {
 int BuscaAutorId(FILE *ptr, int ID) {
   Autor AuxAutor;
 
-  rewind(ptr);
+  fseek(ptr, 0, 0);
   fread(&AuxAutor, sizeof(Autor), 1, ptr);
 
-  while (!feof(ptr) && (ID != AuxAutor.id || AuxAutor.excluido != 1))
+  while (!feof(ptr) && (ID != AuxAutor.id || AuxAutor.excluido != 0))
     fread(&AuxAutor, sizeof(Autor), 1, ptr);
   
   if (!feof(ptr))
@@ -129,12 +129,12 @@ void CadastrarAutor (void) {
   printf ("Nome do Autor: ");
   fflush(stdin);
   gets(AutorAux.nome);
-  while (strcasecmp(AutorAux.nome, "\0") != 0) {
+  while (strlen(AutorAux.nome) > 1) {
     AutorAux.id++;
     printf ("País de Origem do Autor: ");
     fflush(stdin);
     gets(AutorAux.nacionalidade);
-    AutorAux.excluido = 1;
+    AutorAux.excluido = 0;
 
     fwrite (&AutorAux, sizeof(Autor), 1, ptr);
 
@@ -155,12 +155,12 @@ void CadastrarLivro (void) {
   printf ("Titulo do Livro: ");
   fflush(stdin);
   gets(LivroAux.titulo);
-  while (strcasecmp(LivroAux.titulo, "\0") != 0) {
+  while (strlen(LivroAux.titulo) > 1) {
     LivroAux.id++;
     printf ("Ano de Publicação do Livro: ");
     fflush(stdin);
     scanf ("%d", &LivroAux.anoPublicacao);
-    LivroAux.excluido = 1;
+    LivroAux.excluido = 0;
 
     fwrite(&LivroAux, sizeof(Livro), 1, ptr);
 
@@ -177,16 +177,12 @@ void AlterarAutor(void) {
   Autor AuxAutor;
 
   ptr = fopen ("biblioteca/autor.dat", "rb+");
-  if (ptr == NULL)
-    printf ("Erro na abertura do Arquivo\n");
-  else {
+  if (ptr != NULL) {
     printf ("ID do Autor: ");
     scanf ("%d", &id);
     while (id != 0) {
       pos = BuscaAutorId(ptr, id);
-      if (pos == -1)
-        printf ("Autor desconhecido!!\n");
-      else {
+      if (pos >= 0) {
         fseek(ptr, pos, 0);
         fread (&AuxAutor, sizeof(Autor), 1, ptr);
         printf ("<<<<< Dados do Autor >>>>\n");
@@ -206,13 +202,18 @@ void AlterarAutor(void) {
           fwrite(&AuxAutor, sizeof(Autor), 1, ptr);
           printf ("Dados Alterados!!\n");
         }
-      }
+      }        
+      else 
+        printf ("Autor desconhecido!!\n");
+
       printf ("[0] - SAIR\n");
       printf ("ID do Autor: ");
       scanf ("%d", &id);
     }
     fclose(ptr);
-  }
+  }   
+  else 
+    printf ("Erro na abertura do Arquivo\n");
 }
 
 void AlterarLivro (void) {
@@ -220,16 +221,12 @@ void AlterarLivro (void) {
   Livro AuxLivro;
   int pos;
 
-  if (ptr == NULL)
-    printf ("Erro na Abertura do Arquivo!!\n");
-  else {
+  if (ptr != NULL) {
     printf ("ID do Livro: ");
     scanf ("%d", AuxLivro.id);
     while (AuxLivro.id != 0) {
       pos = BuscaLivroId (ptr, AuxLivro.id);
-      if (pos == -1)
-        printf ("Livro não cadastrado!!\n");
-      else {
+      if (pos >= 0) {
         fseek(ptr, pos, 0);
         fread(&AuxLivro, sizeof(Livro), 1, ptr);
         printf ("Dados Encontrados:");
@@ -250,12 +247,17 @@ void AlterarLivro (void) {
         } 
         else 
           printf ("Alteraçao cancelada!!\n");
-      }
+      }     
+      else 
+        printf ("Livro não cadastrado!!\n");
+
       printf ("ID do Livro: ");
       scanf ("%d", AuxLivro.id);
     }
     fclose(ptr);
-  }
+  }   
+  else 
+    printf ("Erro na Abertura do Arquivo!!\n");
 }
 
 void ExclusaoLogicaDeAutor (void) {
@@ -263,16 +265,12 @@ void ExclusaoLogicaDeAutor (void) {
   int pos;
   Autor AutorAux;
 
-  if (ptr == NULL)
-    printf ("Erro na abertura do arquivo\n");
-  else {
+  if (ptr != NULL) {
     printf ("ID do Autor: ");
     scanf("%d", &AutorAux.id);
     while (AutorAux.id != 0) {
       pos = BuscaAutorId(ptr, AutorAux.id);
-      if (pos == -1)
-        printf ("Autor Desconhecido!!\n");
-      else {
+      if (pos >= 0) {
         fseek(ptr, pos, 0);
         fread(&AutorAux, sizeof(Autor), 1, ptr);
         printf ("<<<<< Dados do Autor >>>>\n");
@@ -283,28 +281,29 @@ void ExclusaoLogicaDeAutor (void) {
         printf ("Confirma a Exclusão? (S/N)");
         if (toupper(getch()) == 'S') {
           fseek(ptr, pos, 0);
-          AutorAux.excluido = 0;
+          AutorAux.excluido = 1;
           fwrite(&AutorAux, sizeof(Autor), 1, ptr);
           printf ("Autor Excluído Logicamente\n");
         }
         else
           printf ("Exclusão Cancelada!!\n");
-      }
+      }   
+      else 
+        printf ("Autor Desconhecido!!\n");
       printf ("[0] - SAIR\n");
       printf ("ID do Autor: ");
       scanf("%d", &AutorAux.id);
     }
     fclose (ptr);
   }
+  else 
+    printf ("Erro na abertura do arquivo\n");
 }
 
 void ExclusaoFisicaTodosDeAutor (void) {
   FILE *ptr = fopen ("biblioteca/autor.dat", "rb");
   Autor AuxAutor;
-
-  if (ptr == NULL)
-    printf ("Erro de abertura!!\n");
-  else {
+  if (ptr != NULL) {
     fread (&AuxAutor, sizeof(Autor), 1, ptr);
     FILE *ptrTemp = fopen("biblioteca/autorTemp.dat", "wb");
     while (!feof(ptr)) {
@@ -317,7 +316,9 @@ void ExclusaoFisicaTodosDeAutor (void) {
     remove("biblioteca/autor.dat");
     rename("biblioteca/autorTemp,dat", "biblioteca/autor.dat");
     printf ("Dados Excluidos Fisicamente\n");
-  }
+  }  
+  else 
+    printf ("Erro de abertura!!\n");
 }
 
 // void ConsultaAutor (void) {
