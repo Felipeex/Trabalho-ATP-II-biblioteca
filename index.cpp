@@ -355,6 +355,26 @@ void ExclusaoLogicaDeLivro (void) {
   } else printf ("Erro na Abertura do Arquivo\n");
 }
 
+void ExclusaoFisicaTodosDeLivro (void) {
+  FILE *ptr = fopen ("biblioteca/livro.dat", "rb");
+  Livro AuxLivro;
+
+  if (ptr != NULL) {
+    fread (&AuxLivro, sizeof(Livro), 1, ptr);
+    FILE *ptrTemp = fopen ("biblioteca/livroTemp.dat", "wb");
+    while (!feof(ptr)) {
+      if (!AuxLivro.excluido) 
+        fwrite(&AuxLivro, sizeof(Livro), 1, ptrTemp);
+      fread (&AuxLivro, sizeof(Livro), 1, ptr);
+    }
+    fclose(ptr);
+    fclose(ptrTemp);
+    remove ("biblioteca/livro.dat");
+    rename ("biblioteca/livroTemp.dat", "biblioteca/livro.dat");
+    printf ("Alunos Excluidos");
+  }
+}
+
 // void ConsultaAutor (void) {
 //   FILE *ptr = fopen ("biblioteca/autor.dat", "rb");
 //   int pos;
