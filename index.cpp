@@ -83,6 +83,7 @@ void CadastraLivroAutor (void);
 
 // Outras
 int menu(char options[][100], int studentsLogicSize);
+void tituloMenuPrincipal();
 void limparLinhas(int quantidadeDeOpcoes);
 void Executar (int pos);
 
@@ -94,9 +95,9 @@ int main() {
     "Livro",
     "Empréstimos",
     "Pessoas",
-    "Livro e Autor",
-    "ENCERRAR"
+    "Livro e Autor"
   };
+
   char opcoesAutor[10][100] = {
     "Cadastrar Autor",
     "Alterar Autor",
@@ -104,6 +105,7 @@ int main() {
     "Exibir Autores",
     "Excluir Autor"
   };
+
   char opcoesLivro[10][100] = {
     "Cadastrar Livro",
     "Alterar Livro",
@@ -111,6 +113,7 @@ int main() {
     "Exibir Livros",
     "Excluir Livro"
   };
+
   char opcoesEmprestimo[10][100] = {
     "Cadastrar Emprestimo",
     "Alterar Emprestimo",
@@ -118,6 +121,7 @@ int main() {
     "Exibir Emprestimos",
     "Excluir Emprestimo"
   };
+
   char opcoesPessoas[10][100] = {
     "Cadastrar Pessoa",
     "Alterar Pessoa",
@@ -125,6 +129,7 @@ int main() {
     "Exibir Pessoas",
     "Excluir Pessoa"
   };
+
   char opcoesLivroAutor[10][100] = {
     "Cadastrar Livro a um Autor",
     "Alterar",
@@ -133,27 +138,29 @@ int main() {
     "Excluir"
   };
   
-  // pos = menu(opcoesPrincipais, 6);
   do {
-    pos = menu(opcoesPrincipais, 6);
-     switch (pos) {
-    case 0:
-      menu (opcoesAutor, 5);
-      break;
-    case 1:
-      menu(opcoesLivro, 5);
-      break;
-    case 2: 
-      menu (opcoesEmprestimo, 5);
-      break;
-    case 3:
-      menu (opcoesPessoas, 5);
-      break;
-    case 4:
-      menu(opcoesLivroAutor, 5);
-      break;
-    case 5: 
-      break;
+    clrscr();
+    tituloMenuPrincipal();
+    pos = menu(opcoesPrincipais, 5);
+
+    switch (pos) {
+      case 0:
+        menu(opcoesAutor, 5);
+        break;
+      case 1:
+        menu(opcoesLivro, 5);
+        break;
+      case 2: 
+        menu(opcoesEmprestimo, 5);
+        break;
+      case 3:
+        menu(opcoesPessoas, 5);
+        break;
+      case 4:
+        menu(opcoesLivroAutor, 5);
+        break;
+      case 5: 
+        break;
     }
   } while (pos >= 0 && pos < 5);
  
@@ -570,4 +577,21 @@ void limparLinhas(int quantidadeDeOpcoes) {
     printf("\x1b[1F");
     printf("\33[2K\r");
   }
+}
+
+void tituloMenuPrincipal() {
+  clrscr();
+  textcolor(2);
+  printf("                                                            $$\\                                              $$\\               \n");
+  printf("                                                            \\__|                                             $$ |              \n");
+  printf(" $$$$$$\\   $$$$$$\\   $$$$$$\\   $$$$$$\\  $$$$$$$\\   $$$$$$$\\ $$\\  $$$$$$\\  $$$$$$\\$$$$\\   $$$$$$\\  $$$$$$$\\ $$$$$$\\    $$$$$$\\  \n");
+  printf("$$  __$$\\ $$  __$$\\ $$  __$$\\ $$  __$$\\ $$  __$$\\ $$  _____|$$ | \\____$$\\ $$  _$$  _$$\\ $$  __$$\\ $$  __$$\\\\_$$  _|  $$  __$$\\ \n");
+  printf("$$ /  $$ |$$$$$$$$ |$$ |  \\__|$$$$$$$$ |$$ |  $$ |$$ /      $$ | $$$$$$$ |$$ / $$ / $$ |$$$$$$$$ |$$ |  $$ | $$ |    $$ /  $$ |\n");
+  printf("$$ |  $$ |$$   ____|$$ |      $$   ____|$$ |  $$ |$$ |      $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|$$ |  $$ | $$ |$$\\ $$ |  $$ |\n");
+  printf("\\$$$$$$$ |\\$$$$$$$\\ $$ |      \\$$$$$$$\\ $$ |  $$ |\\$$$$$$$\\ $$ |\\$$$$$$$ |$$ | $$ | $$ |\\$$$$$$$\\ $$ |  $$ | \\$$$$  |\\$$$$$$  |\n");
+  printf(" \\____$$ | \\_______|\\__|       \\_______|\\__|  \\__| \\_______|\\__| \\_______|\\__| \\__| \\__| \\_______|\\__|  \\__|  \\____/  \\______/ \n");
+  printf("$$\\   $$ |                                                                                                                     \n");
+  printf("\\$$$$$$  |                                                                                                                     \n");
+  printf(" \\______|                                                                                                                     \n\n\n\n\n\n\n");
+  textcolor(15);
 }
