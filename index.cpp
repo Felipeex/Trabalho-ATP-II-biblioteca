@@ -119,6 +119,20 @@ int BuscaAutorId(FILE *ptr, int ID) {
   else
     return -1;
 }
+
+int BuscaAutorLivro (FILE *ptrAutorLivro, int idLivro, int idAutor) {
+  LivroAutor Aux;
+
+  fseek (ptrAutorLivro, 0, 0);
+  fread (&Aux, sizeof(LivroAutor), 1, ptrAutorLivro);
+  while (!feof(ptrAutorLivro) && (Aux.idAutor != idAutor || Aux.idLivro != idLivro || Aux.excluido != 0))
+    fread (&Aux, sizeof(LivroAutor), 1, ptrAutorLivro);
+  if (!feof(ptrAutorLivro))
+    return ftell(ptrAutorLivro) - sizeof(LivroAutor);
+  else 
+    return -1;
+
+}
 //--------------------------------------------------------------------------------
 
 // Cadastros
@@ -173,6 +187,48 @@ void CadastrarLivro (void) {
     gets(LivroAux.titulo);
   }
   fclose(ptr);
+}
+
+void CadastraLivroAutor (void) {
+  FILE *ptr = fopen ("biblioteca/autorlivro.dat", "ab+");
+  FILE *ptrLivro = fopen ("biblioteca/livro.dat", "rb");
+  FILE *ptrAutor = fopen ("biblioteca/autor.dat", "rb");
+  LivroAutor Aux;
+  int idLivro, posLivro, idAutor, posAutor, posLivroAutor;
+
+  printf ("ID do Livro: ");
+  scanf ("%d", &idLivro);
+  while (idLivro != 0) {
+    fseek(ptrLivro, 0, 0);
+    posLivro = BuscaLivroId (ptrLivro, idLivro);
+    if (posLivro >= 0) {
+      fseek(ptrAutor, 0, 0);
+      printf ("ID do Autor: ");
+      scanf ("%d", &idAutor);
+      posAutor = BuscaAutorId(ptrAutor, idAutor);
+      if (posAutor >= 0) {
+        posLivroAutor = BuscaAutorLivro (ptr, idLivro, idAutor);
+        if (posLivroAutor == -1) {
+          Aux.idAutor = idAutor;
+          Aux.idLivro = idLivro;
+          Aux.excluido = 0;
+          fwrite(&Aux, sizeof(LivroAutor), 1, ptr);
+        } 
+        else 
+          printf ("Relacionamento de Autor e Livro já cadastrado!!\n");
+      }
+      else 
+        printf ("Autor não cadastrado!!\n");
+    }
+    else
+      printf ("Livro não cadastrado!!\n");
+    printf ("[0] - Sair\n");
+    printf ("ID do Livro: ");
+    scanf ("%d", &idLivro);
+  }
+  fclose(ptr);
+  fclose(ptrAutor);
+  fclose(ptrLivro);
 }
 
 //------------------------------------------------------------------
@@ -391,27 +447,6 @@ void ExclusaoFisicaTodosDeLivro (void) {
 }
 
 // -------------------------------------------------------------------------
-
-// void ConsultaAutor (void) {
-//   FILE *ptr = fopen ("biblioteca/autor.dat", "rb");
-//   int pos;
-//   Autor AuxAutor;
-
-//   if (ptr == NULL)
-//     printf ("Erro de Abertura\n");
-//   else {
-//     printf ("ID do Autor: ");
-//     scanf ("%d", &AuxAutor.id);
-//     while (AuxAutor.id != 0) {
-//       pos = BuscaAutorId (ptr, AuxAutor.id);
-//       if (pos == -1)
-//         printf("Autor desconhecido!!\n");
-//       else {
-
-//       }
-//     }
-//   }
-// }
 
 int menu(char opcoes[][100], int quantidadeDeOpcoes) {
   int opcaoSelecionada = 0;
