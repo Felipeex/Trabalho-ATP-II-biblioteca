@@ -69,6 +69,8 @@ int BuscaAutorId(FILE *ptr, int ID);
 void AlterarAutor(void);
 void ExclusaoLogicaDeAutor (void);
 void ExclusaoFisicaTodosDeAutor (void);
+void autorMenu();
+void tituloMenuAutor();
 
 //Livro Funções 
 void CadastrarLivro (void);
@@ -88,8 +90,7 @@ void limparLinhas(int quantidadeDeOpcoes);
 void Executar (int pos);
 
 int main() {
-  clrscr();
-  int pos;
+  int opcaoSelecionada;
   char opcoesPrincipais[10][100] = {
     "Autor",
     "Livro",
@@ -98,15 +99,7 @@ int main() {
     "Livro e Autor"
   };
 
-  char opcoesAutor[10][100] = {
-    "Cadastrar Autor",
-    "Alterar Autor",
-    "Consultar Autor",
-    "Exibir Autores",
-    "Excluir Autor"
-  };
-
-  char opcoesLivro[10][100] = {
+ /*  char opcoesLivro[10][100] = {
     "Cadastrar Livro",
     "Alterar Livro",
     "Consultar Livro",
@@ -136,18 +129,18 @@ int main() {
     "Consultar",
     "Exibir Todos",
     "Excluir"
-  };
+  }; */
   
   do {
     clrscr();
     tituloMenuPrincipal();
-    pos = menu(opcoesPrincipais, 5);
+    opcaoSelecionada = menu(opcoesPrincipais, 5);
 
-    switch (pos) {
+    switch (opcaoSelecionada) {
       case 0:
-        menu(opcoesAutor, 5);
+        autorMenu();
         break;
-      case 1:
+      /* case 1:
         menu(opcoesLivro, 5);
         break;
       case 2: 
@@ -160,11 +153,29 @@ int main() {
         menu(opcoesLivroAutor, 5);
         break;
       case 5: 
-        break;
+        break; */
     }
-  } while (pos >= 0 && pos < 5);
- 
-} 
+  } while (opcaoSelecionada != -1);
+}
+
+void autorMenu() {
+  int opcaoSelecionada;
+  char opcoesAutor[10][100] = {
+    "Cadastrar Autor",
+    "Alterar Autor",
+    "Consultar Autor",
+    "Exibir Autores",
+    "Excluir Autor"
+  };
+
+  do {
+    clrscr();
+    tituloMenuAutor();
+    opcaoSelecionada = menu(opcoesAutor, 5);
+
+    switch(opcaoSelecionada) {}
+  } while(opcaoSelecionada != -1);
+}
 
 // Buscas 
 
@@ -535,7 +546,6 @@ int menu(char opcoes[][100], int quantidadeDeOpcoes) {
     limparLinhas(quantidadeDeOpcoes);
 
     for(int index = 0; index < quantidadeDeOpcoes; index++) {
-
       if (index == opcaoSelecionada) {
         textcolor(15);
         printf("%c %s\n", PONTEIRO, opcoes[opcaoSelecionada]);
@@ -559,13 +569,12 @@ int menu(char opcoes[][100], int quantidadeDeOpcoes) {
           opcaoSelecionada--;
       break;
     }
-
   } while(acao != ESC_NUMERO && acao != ENTER_NUMERO);
 
   printf("\e[?25h");
   textcolor(15);
 
-  if (acao != 27) {
+  if (acao != ESC_NUMERO) {
     return opcaoSelecionada;
   }
 
@@ -593,5 +602,19 @@ void tituloMenuPrincipal() {
   printf("$$\\   $$ |                                                                                                                     \n");
   printf("\\$$$$$$  |                                                                                                                     \n");
   printf(" \\______|                                                                                                                     \n\n\n\n\n\n\n");
+  textcolor(15);
+}
+
+void tituloMenuAutor() {
+  clrscr();
+  textcolor(2);
+  printf(" $$$$$$\\              $$\\                         \n");
+  printf("$$  __$$\\             $$ |                        \n");
+  printf("$$ /  $$ |$$\\   $$\\ $$$$$$\\    $$$$$$\\   $$$$$$\\  \n");
+  printf("$$$$$$$$ |$$ |  $$ |\\_$$  _|  $$  __$$\\ $$  __$$\\ \n");
+  printf("$$  __$$ |$$ |  $$ |  $$ |    $$ /  $$ |$$ |  \\__|\n");
+  printf("$$ |  $$ |$$ |  $$ |  $$ |$$\\ $$ |  $$ |$$ |      \n");
+  printf("$$ |  $$ |\\$$$$$$  |  \\$$$$  |\\$$$$$$  |$$ |      \n");
+  printf("\\__|  \\__| \\______/    \\____/  \\______/ \\__|      \n\n\n\n\n\n\n");
   textcolor(15);
 }
