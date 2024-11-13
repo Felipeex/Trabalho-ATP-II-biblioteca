@@ -84,15 +84,73 @@ void CadastraLivroAutor (void);
 // Outras
 int menu(char options[][100], int studentsLogicSize);
 void limparLinhas(int quantidadeDeOpcoes);
+void Executar (int pos);
 
 int main() {
+  clrscr();
+  int pos;
   char opcoesPrincipais[10][100] = {
-    "Primeira opcao",
-    "Segundo opcao"
+    "Autor",
+    "Livro",
+    "Empréstimos",
+    "Pessoas",
+    "Livro e Autor"
   };
-
-  menu(opcoesPrincipais, 2);
-}
+  char opcoesAutor[10][100] = {
+    "Cadastrar Autor",
+    "Alterar Autor",
+    "Consultar Autor",
+    "Exibir Autores",
+    "Excluir Autor"
+  };
+  char opcoesLivro[10][100] = {
+    "Cadastrar Livro",
+    "Alterar Livro",
+    "Consultar Livro",
+    "Exibir Livros",
+    "Excluir Livro"
+  };
+  char opcoesEmprestimo[10][100] = {
+    "Cadastrar Emprestimo",
+    "Alterar Emprestimo",
+    "Consultar Emprestimo",
+    "Exibir Emprestimos",
+    "Excluir Emprestimo"
+  };
+  char opcoesPessoas[10][100] = {
+    "Cadastrar Pessoa",
+    "Alterar Pessoa",
+    "Consultar Pessoa",
+    "Exibir Pessoas",
+    "Excluir Pessoa"
+  };
+  char opcoesLivroAutor[10][100] = {
+    "Cadastrar Livro a um Autor",
+    "Alterar",
+    "Consultar",
+    "Exibir Todos",
+    "Excluir"
+  };
+  
+  pos = menu(opcoesPrincipais, 5);
+  switch (pos) {
+    case 0:
+      menu (opcoesAutor, 5);
+      break;
+    case 1:
+      menu(opcoesLivro, 5);
+      break;
+    case 2: 
+      menu (opcoesEmprestimo, 5);
+      break;
+    case 3:
+      menu (opcoesPessoas, 5);
+      break;
+    case 4:
+      menu(opcoesLivroAutor, 5);
+      break;
+  }
+} 
 
 // Buscas 
 
