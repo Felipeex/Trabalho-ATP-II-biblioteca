@@ -74,6 +74,12 @@ void ExclusaoFisicaTodosDeAutor (void);
 void CadastrarLivro (void);
 void AlterarLivro (void);
 int BuscaLivroId (FILE *ptr, int Id);
+void ExclusaoFisicaTodosDeLivro (void);
+void ExclusaoLogicaDeLivro (void);
+
+//Livro e Autor Funçoes
+int BuscaAutorLivro (FILE *ptrAutorLivro, int idLivro, int idAutor);
+void CadastraLivroAutor (void);
 
 // Outras
 int menu(char options[][100], int studentsLogicSize);
