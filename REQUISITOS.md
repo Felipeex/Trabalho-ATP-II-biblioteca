@@ -4,7 +4,7 @@
 
 - [x] Deve ser possivel cadastrar um livro
 - [x] Deve ser possivel editar um livro
-- [ ] Deve ser possivel excluir um livro logicamente
+- [x] Deve ser possivel excluir um livro logicamente
 - [ ] Deve ser possivel excluir um livro fisicamente
 - [ ] Deve ser possivel consultar todos os dados dos livros
 

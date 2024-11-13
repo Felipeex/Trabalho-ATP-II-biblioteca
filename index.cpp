@@ -307,7 +307,7 @@ void ExclusaoFisicaTodosDeAutor (void) {
     fread (&AuxAutor, sizeof(Autor), 1, ptr);
     FILE *ptrTemp = fopen("biblioteca/autorTemp.dat", "wb");
     while (!feof(ptr)) {
-      if (AuxAutor.excluido)
+      if (!AuxAutor.excluido)
         fwrite(&AuxAutor, sizeof(Autor), 1, ptrTemp);
       fread (&AuxAutor, sizeof(Autor), 1, ptr);
     }
@@ -319,6 +319,40 @@ void ExclusaoFisicaTodosDeAutor (void) {
   }  
   else 
     printf ("Erro de abertura!!\n");
+}
+
+void ExclusaoLogicaDeLivro (void) {
+  FILE *ptr = fopen("biblioteca/livro.dat", "rb+");
+  Livro AuxLivro;
+  int pos;
+
+  if (ptr != NULL) {  
+    printf ("Id do Livro que deseja excluir: ");
+    scanf ("%d", AuxLivro.id);
+    while (AuxLivro.id != 0) {
+      pos = BuscaLivroId (ptr, AuxLivro.id);
+      if (pos >= 0) {
+        fseek (ptr, pos, 0);
+        fread (&AuxLivro, sizeof(Livro), 1, ptr);
+        printf ("<<<<<<< Dados do Livro >>>>>>\n");
+        printf ("ID: %d\n", AuxLivro.id);
+        printf ("Titulo: %s\n", AuxLivro.titulo);
+        printf ("Ano de Publicação: %d\n", AuxLivro.anoPublicacao);
+        printf ("--------------------------------------------\n");
+        printf ("Deseja Realizar a Exclusão? (S/N)");
+        if (toupper(getch()) == 'S') {
+          AuxLivro.excluido = 1;
+          fseek (ptr, pos, 0);
+          fwrite (&AuxLivro, sizeof(Livro), 1, ptr);
+          printf ("Livro excluído logicamente\n");
+        } else printf ("Exclusão Cancelada!!\n");
+      } else printf ("Livro não encontrado!!\n");
+
+      printf ("[0] - SAIR\n");
+      printf ("Id do Livro que deseja excluir: ");
+      scanf ("%d", AuxLivro.id);
+    }
+  } else printf ("Erro na Abertura do Arquivo\n");
 }
 
 // void ConsultaAutor (void) {
