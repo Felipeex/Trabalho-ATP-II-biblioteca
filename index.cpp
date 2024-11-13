@@ -173,7 +173,11 @@ void autorMenu() {
     tituloMenuAutor();
     opcaoSelecionada = menu(opcoesAutor, 5);
 
-    switch(opcaoSelecionada) {}
+    switch(opcaoSelecionada) {
+      case 0:
+        CadastrarAutor();
+        break;
+    }
   } while(opcaoSelecionada != -1);
 }
 
@@ -238,7 +242,7 @@ void CadastrarAutor (void) {
   gets(AutorAux.nome);
   while (strlen(AutorAux.nome) > 1) {
     AutorAux.id++;
-    printf ("País de Origem do Autor: ");
+    printf ("Nacionalidade: ");
     fflush(stdin);
     gets(AutorAux.nacionalidade);
     AutorAux.excluido = 0;
