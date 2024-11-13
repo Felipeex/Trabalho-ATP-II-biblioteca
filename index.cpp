@@ -94,7 +94,8 @@ int main() {
     "Livro",
     "Empréstimos",
     "Pessoas",
-    "Livro e Autor"
+    "Livro e Autor",
+    "ENCERRAR"
   };
   char opcoesAutor[10][100] = {
     "Cadastrar Autor",
@@ -132,8 +133,10 @@ int main() {
     "Excluir"
   };
   
-  pos = menu(opcoesPrincipais, 5);
-  switch (pos) {
+  // pos = menu(opcoesPrincipais, 6);
+  do {
+    pos = menu(opcoesPrincipais, 6);
+     switch (pos) {
     case 0:
       menu (opcoesAutor, 5);
       break;
@@ -149,7 +152,11 @@ int main() {
     case 4:
       menu(opcoesLivroAutor, 5);
       break;
-  }
+    case 5: 
+      break;
+    }
+  } while (pos >= 0 && pos < 5);
+ 
 } 
 
 // Buscas 
