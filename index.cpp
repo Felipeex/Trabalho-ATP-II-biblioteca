@@ -72,11 +72,13 @@ void ExclusaoFisicaTodosDeAutor (void);
 void autorMenu();
 void livroMenu();
 void emprestimoMenu();
-void tituloMenuAutor();
+void livroAutorMenu();
 void pessoasMenu();
+void tituloMenuAutor();
 void tituloMenuLivro();
 void tituloMenuEmprestimo();
 void tituloMenuPessoas();
+void tituloMenuLivroAutor();
 void ExibirTodosAutores(void);
 
 //Livro Funções 
@@ -156,9 +158,9 @@ int main() {
       case 3:
         pessoasMenu();
         break;
-      // case 4:
-      //   menu(opcoesLivroAutor, 5);
-      //   break;
+      case 4:
+        livroAutorMenu();;
+        break;
       // case 5: 
       //   break; 
     }
@@ -275,6 +277,36 @@ void pessoasMenu() {
     clrscr();
     tituloMenuPessoas();
     opcaoSelecionada = menu(opcoesPessoas, 5);
+
+    switch (opcaoSelecionada){
+      case 0:
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+    }
+  } while (opcaoSelecionada != -1);
+}
+
+void livroAutorMenu() {
+  int opcaoSelecionada;
+  char opcoesLivroAutor[10][100] = {
+    "Cadastrar Livro a um Autor",
+    "Alterar",
+    "Consultar",
+    "Exibir Todos",
+    "Excluir"
+  }; 
+
+  do {
+    clrscr();
+    tituloMenuLivroAutor();
+    opcaoSelecionada = menu (opcoesLivroAutor, 5);
 
     switch (opcaoSelecionada){
       case 0:
@@ -799,6 +831,23 @@ void tituloMenuPessoas() {
     printf("$$ |      $$   ____| \\____$$\\  \\____$$\\ $$ |  $$ |$$  __$$ | \\____$$\\ \n");
     printf("$$ |      \\$$$$$$$\\ $$$$$$$  |$$$$$$$  |\\$$$$$$  |\\$$$$$$$ |$$$$$$$  |\n");
     printf("\\__|       \\_______|\\_______/ \\_______/  \\______/  \\_______|\\_______/ \n\n\n\n\n\n\n\n");
+
+    textcolor(15);    
+}
+
+
+void tituloMenuLivroAutor() {
+    clrscr();         
+    textcolor(2);    
+
+    printf("$$\\       $$\\                                                       $$$$$$\\              $$\\                         \n");
+    printf("$$ |      \\__|                                                     $$  __$$\\             $$ |                        \n");
+    printf("$$ |      $$\\ $$\\    $$\\  $$$$$$\\   $$$$$$\\         $$$$$$\\        $$ /  $$ |$$\\   $$\\ $$$$$$\\    $$$$$$\\   $$$$$$\\  \n");
+    printf("$$ |      $$ |\\$$\\  $$  |$$  __$$\\ $$  __$$\\       $$  __$$\\       $$$$$$$$ |$$ |  $$ |\\_$$  _|  $$  __$$\\ $$  __$$\\ \n");
+    printf("$$ |      $$ | \\$$\\$$  / $$ |  \\__|$$ /  $$ |      $$$$$$$$ |      $$  __$$ |$$ |  $$ |  $$ |    $$ /  $$ |$$ |  \\__|\n");
+    printf("$$ |      $$ |  \\$$$  /  $$ |      $$ |  $$ |      $$   ____|      $$ |  $$ |$$ |  $$ |  $$ |$$\\ $$ |  $$ |$$ |      \n");
+    printf("$$$$$$$$\\ $$ |   \\$  /   $$ |      \\$$$$$$  |      \\$$$$$$$\\       $$ |  $$ |\\$$$$$$  |  \\$$$$  |\\$$$$$$  |$$ |      \n");
+    printf("\\________|\\__|    \\_/    \\__|       \\______/        \\_______|      \\__|  \\__| \\______/    \\____/  \\______/ \\__|      \n\n\n\n\n\n\n");
 
     textcolor(15);    
 }
