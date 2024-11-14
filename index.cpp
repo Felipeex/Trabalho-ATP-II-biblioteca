@@ -107,38 +107,6 @@ int main() {
     "Pessoas",
     "Livro e Autor"
   };
-
- /*  char opcoesLivro[10][100] = {
-    "Cadastrar Livro",
-    "Alterar Livro",
-    "Consultar Livro",
-    "Exibir Livros",
-    "Excluir Livro"
-  };
-
-  char opcoesEmprestimo[10][100] = {
-    "Cadastrar Emprestimo",
-    "Alterar Emprestimo",
-    "Consultar Emprestimo",
-    "Exibir Emprestimos",
-    "Excluir Emprestimo"
-  };
-
-  char opcoesPessoas[10][100] = {
-    "Cadastrar Pessoa",
-    "Alterar Pessoa",
-    "Consultar Pessoa",
-    "Exibir Pessoas",
-    "Excluir Pessoa"
-  };
-
-  char opcoesLivroAutor[10][100] = {
-    "Cadastrar Livro a um Autor",
-    "Alterar",
-    "Consultar",
-    "Exibir Todos",
-    "Excluir"
-  }; */
   
   do {
     clrscr();
@@ -161,8 +129,6 @@ int main() {
       case 4:
         livroAutorMenu();;
         break;
-      // case 5: 
-      //   break; 
     }
   } while (opcaoSelecionada != -1);
 }
