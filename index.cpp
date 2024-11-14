@@ -70,16 +70,9 @@ void AlterarAutor(void);
 void ExclusaoLogicaDeAutor (void);
 void ExclusaoFisicaTodosDeAutor (void);
 void autorMenu();
-void livroMenu();
-void emprestimoMenu();
-void livroAutorMenu();
-void pessoasMenu();
 void tituloMenuAutor();
-void tituloMenuLivro();
-void tituloMenuEmprestimo();
-void tituloMenuPessoas();
-void tituloMenuLivroAutor();
 void ExibirTodosAutores(void);
+void exclusaoAutoresMenu ();
 
 // Pessoa
 void CadastrarPessoa();
@@ -90,10 +83,23 @@ void AlterarLivro (void);
 int BuscaLivroId (FILE *ptr, int Id);
 void ExclusaoFisicaTodosDeLivro (void);
 void ExclusaoLogicaDeLivro (void);
+void livroMenu();
+void tituloMenuLivro();
 
 //Livro e Autor Funçoes
 int BuscaAutorLivro (FILE *ptrAutorLivro, int idLivro, int idAutor);
 void CadastraLivroAutor (void);
+void tituloMenuLivroAutor();
+void livroAutorMenu();
+
+// Emprestimo Funcoes
+void emprestimoMenu();
+void tituloMenuEmprestimo();
+
+//Pessoas Funcoes
+void pessoasMenu();
+void tituloMenuPessoas();
+
 
 // Outras
 int menu(char options[][100], int studentsLogicSize);
@@ -114,6 +120,7 @@ int main() {
   do {
     clrscr();
     tituloMenuPrincipal();
+    fflush(stdin);
     opcaoSelecionada = menu(opcoesPrincipais, 5);
 
     switch (opcaoSelecionada) {
@@ -149,6 +156,7 @@ void autorMenu() {
   do {
     clrscr();
     tituloMenuAutor();
+    fflush(stdin);
     opcaoSelecionada = menu(opcoesAutor, 5);
 
     switch(opcaoSelecionada) {
@@ -165,6 +173,7 @@ void autorMenu() {
         getch();
         break;
       case 4:
+        exclusaoAutoresMenu();
         break;
     }
   } while(opcaoSelecionada != -1);
@@ -319,6 +328,31 @@ void livroAutorMenu() {
       case 3:
         break;
       case 4:
+        break;
+    }
+  } while (opcaoSelecionada != -1);
+}
+
+void exclusaoAutoresMenu () {
+  int opcaoSelecionada;
+  char opcoesExclusao[10][100] = {
+    "Exclusão Lógica",
+    "Exclusão Fiísica de um Dado",
+    "Exclusão Física dos Excluidos Lógicos"
+  };
+
+  do {
+    clrscr();
+    tituloMenuAutor();
+    opcaoSelecionada = menu (opcoesExclusao, 3);
+    switch (opcaoSelecionada) {
+      case 0:
+        ExclusaoLogicaDeAutor();
+        break;
+      case 1:
+        break;
+      case 2:
+        ExclusaoFisicaTodosDeAutor();
         break;
     }
   } while (opcaoSelecionada != -1);
@@ -585,6 +619,7 @@ void ExclusaoLogicaDeAutor (void) {
   FILE *ptr = fopen ("biblioteca/autor.dat", "rb+");
   int pos;
   Autor AutorAux;
+  char opcao;
 
   if (ptr != NULL) {
     printf ("ID do Autor: ");
@@ -600,7 +635,9 @@ void ExclusaoLogicaDeAutor (void) {
         printf ("Nacionalidade: %s\n", AutorAux.nacionalidade);
         printf ("--------------------------------------------\n");
         printf ("Confirma a Exclusão? (S/N)");
-        if (toupper(getch()) == 'S') {
+        fflush(stdin);
+        opcao = toupper(getch());
+        if (opcao == 'S') {
           fseek(ptr, pos, 0);
           AutorAux.excluido = 1;
           fwrite(&AutorAux, sizeof(Autor), 1, ptr);
