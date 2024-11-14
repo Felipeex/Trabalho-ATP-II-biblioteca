@@ -81,6 +81,9 @@ void tituloMenuPessoas();
 void tituloMenuLivroAutor();
 void ExibirTodosAutores(void);
 
+// Pessoa
+void CadastrarPessoa();
+
 //Livro Funções 
 void CadastrarLivro (void);
 void AlterarLivro (void);
@@ -246,6 +249,7 @@ void pessoasMenu() {
 
     switch (opcaoSelecionada){
       case 0:
+        CadastrarPessoa();
         break;
       case 1:
         break;
@@ -257,6 +261,37 @@ void pessoasMenu() {
         break;
     }
   } while (opcaoSelecionada != -1);
+}
+
+void CadastrarPessoa() {
+  FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "ab+");
+  Pessoa novaPessoa;
+  int ultimoId;
+
+  do {
+    if (PonteiroPessoaArquivo != NULL) {
+      printf("Nome: ");
+      fflush(stdin);
+      gets(novaPessoa.nome);
+
+      if (strlen(novaPessoa.nome) > 1) {
+        ultimoId = ftell(PonteiroPessoaArquivo) / sizeof(Autor);
+        novaPessoa.id = ultimoId + 1;
+
+        printf("Telefone | EX: (18) 99678-5231: ");
+        fflush(stdin);
+        gets(novaPessoa.telefone);
+
+        printf("Endereço: ");
+        fflush(stdin);
+        gets(novaPessoa.endereco);
+
+        novaPessoa.excluido = 0;
+
+        fwrite(&novaPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+      }
+    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+  } while(PonteiroPessoaArquivo != NULL && strlen(novaPessoa.nome) > 1);
 }
 
 void livroAutorMenu() {
