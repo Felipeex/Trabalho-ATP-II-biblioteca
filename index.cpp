@@ -71,6 +71,7 @@ void ExclusaoLogicaDeAutor (void);
 void ExclusaoFisicaTodosDeAutor (void);
 void autorMenu();
 void tituloMenuAutor();
+void ExibirTodosAutores(void);
 
 //Livro Funções 
 void CadastrarLivro (void);
@@ -177,6 +178,17 @@ void autorMenu() {
       case 0:
         CadastrarAutor();
         break;
+      case 1:
+        AlterarAutor();
+        break;
+      case 2:
+        break;
+      case 3:
+        ExibirTodosAutores();
+        getch();
+        break;
+      case 4:
+        break;
     }
   } while(opcaoSelecionada != -1);
 }
@@ -234,14 +246,11 @@ void CadastrarAutor (void) {
   Autor AutorAux;
 
   ptr = fopen ("biblioteca/autor.dat", "ab+");
-
-  if (ptr == NULL)
-    AutorAux.id = 0;
   printf ("Nome do Autor: ");
   fflush(stdin);
   gets(AutorAux.nome);
   while (strlen(AutorAux.nome) > 1) {
-    AutorAux.id++;
+    AutorAux.id = ftell(ptr) / sizeof(Autor) + 1;
     printf ("Nacionalidade: ");
     fflush(stdin);
     gets(AutorAux.nacionalidade);
@@ -261,13 +270,11 @@ void CadastrarLivro (void) {
   Livro LivroAux;
 
   ptr = fopen ("biblioteca/livro.dat", "ab+");
-  if (ptr == NULL)
-    LivroAux.id = 0;
   printf ("Titulo do Livro: ");
   fflush(stdin);
   gets(LivroAux.titulo);
   while (strlen(LivroAux.titulo) > 1) {
-    LivroAux.id++;
+    LivroAux.id = ftell(ptr) / sizeof(Livro) + 1;
     printf ("Ano de Publicação do Livro: ");
     fflush(stdin);
     scanf ("%d", &LivroAux.anoPublicacao);
@@ -323,6 +330,30 @@ void CadastraLivroAutor (void) {
   fclose(ptrAutor);
   fclose(ptrLivro);
 }
+//------------------------------------------------------------------
+// Exibir Todos
+
+void ExibirTodosAutores(void) {
+  FILE *ptr = fopen("biblioteca/autor.dat", "rb");
+  Autor AuxAutor;
+
+  if (ptr != NULL) {
+    fread(&AuxAutor, sizeof(Autor), 1, ptr);
+    printf ("Dados dos Autores: \n");
+    while (!feof(ptr)) {
+      if (AuxAutor.excluido != 1) {
+        printf ("ID do Autor: %d\n", AuxAutor.id);
+        printf ("Nome do Autor: %s\n", AuxAutor.nome);
+        printf ("Nacionalidade: %s\n", AuxAutor.nacionalidade);
+        printf ("-------------------------------------------\n");
+      }
+      fread(&AuxAutor, sizeof(Autor), 1, ptr);
+    }
+    fclose(ptr);
+  }
+  else  
+    printf ("Erro na Abertura do Arquivo!!\n");
+} 
 
 //------------------------------------------------------------------
 
