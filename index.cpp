@@ -73,8 +73,10 @@ void autorMenu();
 void livroMenu();
 void emprestimoMenu();
 void tituloMenuAutor();
+void pessoasMenu();
 void tituloMenuLivro();
 void tituloMenuEmprestimo();
+void tituloMenuPessoas();
 void ExibirTodosAutores(void);
 
 //Livro Funções 
@@ -151,9 +153,9 @@ int main() {
       case 2: 
         emprestimoMenu();
         break;
-      // case 3:
-      //   menu(opcoesPessoas, 5);
-      //   break;
+      case 3:
+        pessoasMenu();
+        break;
       // case 4:
       //   menu(opcoesLivroAutor, 5);
       //   break;
@@ -245,6 +247,36 @@ void emprestimoMenu() {
     opcaoSelecionada = menu(opcoesEmprestimo, 5);
 
     switch (opcaoSelecionada) {
+      case 0:
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+    }
+  } while (opcaoSelecionada != -1);
+}
+
+void pessoasMenu() {
+  int opcaoSelecionada;
+  char opcoesPessoas[10][100] = {
+    "Cadastrar Pessoa",
+    "Alterar Pessoa",
+    "Consultar Pessoa",
+    "Exibir Pessoas",
+    "Excluir Pessoa"
+  };
+
+  do {
+    clrscr();
+    tituloMenuPessoas();
+    opcaoSelecionada = menu(opcoesPessoas, 5);
+
+    switch (opcaoSelecionada){
       case 0:
         break;
       case 1:
@@ -753,4 +785,20 @@ void tituloMenuEmprestimo() {
   printf("                        \\__|                                                                          \n\n\n\n\n\n\n");
 
   textcolor(15);  
+}
+
+void tituloMenuPessoas() {
+    clrscr();         
+    textcolor(2);     
+
+    printf("$$$$$$$\\                                                              \n");
+    printf("$$  __$$\\                                                             \n");
+    printf("$$ |  $$ | $$$$$$\\   $$$$$$$\\  $$$$$$$\\  $$$$$$\\   $$$$$$\\   $$$$$$$\\ \n");
+    printf("$$$$$$$  |$$  __$$\\ $$  _____|$$  _____|$$  __$$\\  \\____$$\\ $$  _____|\n");
+    printf("$$  ____/ $$$$$$$$ |\\$$$$$$\\  \\$$$$$$\\  $$ /  $$ | $$$$$$$ |\\$$$$$$\\  \n");
+    printf("$$ |      $$   ____| \\____$$\\  \\____$$\\ $$ |  $$ |$$  __$$ | \\____$$\\ \n");
+    printf("$$ |      \\$$$$$$$\\ $$$$$$$  |$$$$$$$  |\\$$$$$$  |\\$$$$$$$ |$$$$$$$  |\n");
+    printf("\\__|       \\_______|\\_______/ \\_______/  \\______/  \\_______|\\_______/ \n\n\n\n\n\n\n\n");
+
+    textcolor(15);    
 }
