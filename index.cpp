@@ -638,7 +638,7 @@ void ExclusaoLogicaDeAutor (void) {
         fflush(stdin);
         opcao = toupper(getch());
         if (opcao == 'S') {
-          fseek(ptr, pos, 0);
+            fseek(ptr, pos, 0);
           AutorAux.excluido = 1;
           fwrite(&AutorAux, sizeof(Autor), 1, ptr);
           printf ("Autor Excluído Logicamente\n");
