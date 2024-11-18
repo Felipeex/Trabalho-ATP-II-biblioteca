@@ -150,14 +150,15 @@ void autorMenu() {
     "Alterar Autor",
     "Consultar Autor",
     "Exibir Autores",
-    "Excluir Autor"
+    "Excluir Autor",
+    "Ordenar Autor",
   };
 
   do {
     clrscr();
     tituloMenuAutor();
     fflush(stdin);
-    opcaoSelecionada = menu(opcoesAutor, 5);
+    opcaoSelecionada = menu(opcoesAutor, 6);
 
     switch(opcaoSelecionada) {
       case 0:
@@ -175,6 +176,8 @@ void autorMenu() {
       case 4:
         exclusaoAutoresMenu();
         break;
+      case 5:
+        break;
     }
   } while(opcaoSelecionada != -1);
 }
@@ -186,13 +189,14 @@ void livroMenu () {
     "Alterar Livro",
     "Consultar Livro",
     "Exibir Livros",
-    "Excluir Livro"
+    "Excluir Livro",
+    "Ordenar Livro"
   };
 
   do {
     clrscr();
     tituloMenuLivro();
-    opcaoSelecionada = menu (opcoesLivro, 5);
+    opcaoSelecionada = menu (opcoesLivro, 6);
 
     switch (opcaoSelecionada) {
       case 0:
@@ -207,6 +211,8 @@ void livroMenu () {
         break;
       case 4:
         break;
+      case 5:
+        break;
     }
   } while (opcaoSelecionada != -1);
 }
@@ -218,13 +224,14 @@ void emprestimoMenu() {
     "Alterar Emprestimo",
     "Consultar Emprestimo",
     "Exibir Emprestimos",
-    "Excluir Emprestimo"
+    "Excluir Emprestimo",
+    "Ordenar Emprestimos",
   };
 
   do {
     clrscr();
     tituloMenuEmprestimo();
-    opcaoSelecionada = menu(opcoesEmprestimo, 5);
+    opcaoSelecionada = menu(opcoesEmprestimo, 6);
 
     switch (opcaoSelecionada) {
       case 0:
@@ -237,6 +244,8 @@ void emprestimoMenu() {
         break;
       case 4:
         break;
+      case 5: 
+        break;
     }
   } while (opcaoSelecionada != -1);
 }
@@ -248,13 +257,14 @@ void pessoasMenu() {
     "Alterar Pessoa",
     "Consultar Pessoa",
     "Exibir Pessoas",
-    "Excluir Pessoa"
+    "Excluir Pessoa",
+    "Ordenar Pessoa"
   };
 
   do {
     clrscr();
     tituloMenuPessoas();
-    opcaoSelecionada = menu(opcoesPessoas, 5);
+    opcaoSelecionada = menu(opcoesPessoas, 6);
 
     switch (opcaoSelecionada){
       case 0:
@@ -267,6 +277,8 @@ void pessoasMenu() {
       case 3:
         break;
       case 4:
+        break;
+      case 5:
         break;
     }
   } while (opcaoSelecionada != -1);
@@ -310,13 +322,14 @@ void livroAutorMenu() {
     "Alterar",
     "Consultar",
     "Exibir Todos",
-    "Excluir"
+    "Excluir",
+    "Ordenar"
   }; 
 
   do {
     clrscr();
     tituloMenuLivroAutor();
-    opcaoSelecionada = menu (opcoesLivroAutor, 5);
+    opcaoSelecionada = menu (opcoesLivroAutor, 6);
 
     switch (opcaoSelecionada){
       case 0:
@@ -328,6 +341,8 @@ void livroAutorMenu() {
       case 3:
         break;
       case 4:
+        break;
+      case 5:
         break;
     }
   } while (opcaoSelecionada != -1);
