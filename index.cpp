@@ -628,7 +628,7 @@ void AlterarLivro (void) {
 
   if (ptr != NULL) {
     printf ("ID do Livro: ");
-    scanf ("%d", AuxLivro.id);
+    scanf ("%d", &AuxLivro.id);
     while (AuxLivro.id != 0) {
       pos = BuscaLivroId (ptr, AuxLivro.id);
       if (pos >= 0) {
@@ -657,7 +657,7 @@ void AlterarLivro (void) {
         printf ("Livro não cadastrado!!\n");
 
       printf ("ID do Livro: ");
-      scanf ("%d", AuxLivro.id);
+      scanf ("%d", &AuxLivro.id);
     }
     fclose(ptr);
   }   
@@ -718,7 +718,7 @@ void ExclusaoLogicaDeLivro (void) {
 
   if (ptr != NULL) {  
     printf ("Id do Livro que deseja excluir: ");
-    scanf ("%d", AuxLivro.id);
+    scanf ("%d", &AuxLivro.id);
     while (AuxLivro.id != 0) {
       pos = BuscaLivroId (ptr, AuxLivro.id);
       if (pos >= 0) {
@@ -792,6 +792,43 @@ void ExclusaoFisicaTodosDeLivro (void) {
 }
 
 // -------------------------------------------------------------------------
+
+// Consultar
+
+void ConsultarAutor(void) {
+  FILE * ptr = fopen("biblioteca/autor.dat", "rb");
+  Autor Aux;
+  Livro AuxLivro;
+  int pos;
+
+  if (ptr != NULL) {
+    do {
+      printf ("ID do Autor: ");
+      scanf ("%d", &Aux.id);
+      pos = BuscaAutorId(ptr, Aux.id);
+      if (pos >= 0) {
+        FILE * ptrLivro = fopen ("biblioteca/livro.dat", "rb");
+        printf ("ID do Autor: %d\n", Aux.id);
+        printf ("Nome do Autor: %s\n", Aux.nome);
+        printf ("Nacionalidade: %s\n", Aux.nacionalidade);
+        printf ("<<<<<<< Livros que o Autor escreveu >>>>>>");
+        fseek(ptrLivro, 0, 0);
+        fread(&AuxLivro, sizeof(Livro), 1, ptrLivro);
+        while (!feof(ptrLivro)) {
+          if (AuxLivro.excluido != 1) {
+            printf ("Nome do livro: %s\n", AuxLivro.titulo);
+            printf ("Ano de publicação: %d\n", AuxLivro.anoPublicacao);
+          }
+          fread(&AuxLivro, sizeof(Livro), 1, ptrLivro);
+        }
+        fclose (ptrLivro);
+      }
+    } while (Aux.id != 0);
+    fclose(ptr);
+  } 
+  else
+    printf ("Erro na Abertura do Arquivo\n");
+}
 
 int menu(char opcoes[][100], int quantidadeDeOpcoes) {
   int opcaoSelecionada = 0;
