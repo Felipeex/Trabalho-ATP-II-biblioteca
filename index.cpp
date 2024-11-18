@@ -76,6 +76,8 @@ void exclusaoAutoresMenu ();
 
 // Pessoa
 void CadastrarPessoa();
+void EditarPessoa(); 
+int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id);
 
 //Livro Funções 
 void CadastrarLivro (void);
@@ -271,6 +273,7 @@ void pessoasMenu() {
         CadastrarPessoa();
         break;
       case 1:
+        EditarPessoa();
         break;
       case 2:
         break;
@@ -313,6 +316,41 @@ void CadastrarPessoa() {
       }
     } else printf("\n Não foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && strlen(novaPessoa.nome) > 1);
+}
+
+void EditarPessoa() {
+  FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
+  int indice;
+  Pessoa PessoaParaEditar;
+  do {
+    if (PonteiroPessoaArquivo != NULL) {
+      printf("Foneça o ID da pessoa para editar ou zero para finalizar: ");
+      scanf("%d", &PessoaParaEditar.id);
+
+      indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaParaEditar.id);
+
+      if (indice >= 0) {
+        fseek(PonteiroPessoaArquivo, indice, 0);
+        fread(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+        printf("Novo Nome (Nome Atual: %s)", PessoaParaEditar.nome);
+      } else printf("\n Essa pessoa não existe.");
+    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+  } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
+}
+
+int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id) {
+  Pessoa tmpPessoa; 
+
+  fseek(PonteiroPessoaArquivo, 0, 0);
+  fread(&tmpPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+  while(!feof(PonteiroPessoaArquivo) && (tmpPessoa.id != id || !tmpPessoa.excluido))
+    fread(&tmpPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+
+  if (!feof(PonteiroPessoaArquivo)) {
+    return ftell(PonteiroPessoaArquivo) - sizeof(Pessoa);
+  }
+
+  return -1;
 }
 
 void livroAutorMenu() {
