@@ -504,7 +504,7 @@ void ExibirTodosAutores(void) {
 
   if (ptr != NULL) {
     fread(&AuxAutor, sizeof(Autor), 1, ptr);
-    printf ("Dados dos Autores: \n");
+    printf ("\nDados dos Autores: \n");
     while (!feof(ptr)) {
       if (AuxAutor.excluido != 1) {
         printf ("ID do Autor: %d\n", AuxAutor.id);
@@ -634,11 +634,11 @@ void ExclusaoLogicaDeAutor (void) {
         printf ("Nome: %s\n", AutorAux.nome);
         printf ("Nacionalidade: %s\n", AutorAux.nacionalidade);
         printf ("--------------------------------------------\n");
-        printf ("Confirma a Exclusão? (S/N)");
+        printf ("\nConfirma a Exclusão? (S/N)\n");
         fflush(stdin);
         opcao = toupper(getch());
         if (opcao == 'S') {
-            fseek(ptr, pos, 0);
+          fseek(ptr, pos, 0);
           AutorAux.excluido = 1;
           fwrite(&AutorAux, sizeof(Autor), 1, ptr);
           printf ("Autor Excluído Logicamente\n");
