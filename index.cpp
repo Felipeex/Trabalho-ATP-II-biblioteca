@@ -13,10 +13,15 @@
 #ifdef __APPLE__
 // Conio Unix
 #include "./lib/conio-unix.h"
+
+#define UNIX
 #elif defined(_WIN32) || defined(WIN32)
 // Conio Dos
+#include <windows.h>
 #include "./lib/conio-dos.h"
 #include "./lib/meuconio.h"
+
+#define DOS
 #endif
 
 #include "./headers/cores.h"
@@ -108,8 +113,14 @@ void tituloMenuPessoas();
 int menu(char options[][100], int studentsLogicSize);
 void tituloMenuPrincipal();
 void limparLinhas(int quantidadeDeOpcoes);
+int request(const char message[]);
+void moldura(int width, int height, int color);
 
 int main() {
+  #ifdef DOS
+    SetConsoleOutputCP(CP_UTF8);
+  #endif 
+
   int opcaoSelecionada;
   char opcoesPrincipais[10][100] = {
     "Autor",
@@ -326,11 +337,12 @@ void CadastrarPessoa() {
 
 void EditarPessoa() {
   FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
-  int indice;
   Pessoa PessoaParaEditar;
+  int indice;
+
   do {
     if (PonteiroPessoaArquivo != NULL) {
-      printf("Foneça o ID da pessoa para editar ou zero para finalizar: ");
+      printf(RED "\nFoneça o ID da pessoa para editar ou zero para finalizar: \n");
       scanf("%d", &PessoaParaEditar.id);
 
       indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaParaEditar.id);
@@ -338,6 +350,8 @@ void EditarPessoa() {
       if (indice >= 0) {
         fseek(PonteiroPessoaArquivo, indice, 0);
         fread(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+
+        moldura(100, 5, 1);
         
         printf("ID: %d\n", PessoaParaEditar.id);
         printf("Nome: %s\n", PessoaParaEditar.nome);
@@ -358,13 +372,10 @@ void EditarPessoa() {
         fflush(stdin);
         gets(PessoaParaEditar.endereco);
 
-        /* printf("\nVocê deseja salvar as alterações\n [S] Sim [N] Não");
-
-        if (toupper(getch()) == 'S') {
+        if (request("Você deseja salvar as alterações")) {
           fseek(PonteiroPessoaArquivo, indice, 0);
           fwrite(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
-        }  */
-
+        }
       } else printf("\n Essa pessoa não existe.");
     } else printf("\n Não foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
@@ -375,7 +386,7 @@ int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id) {
 
   fseek(PonteiroPessoaArquivo, 0, 0);
   fread(&tmpPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
-  while(!feof(PonteiroPessoaArquivo) && (tmpPessoa.id != id || !tmpPessoa.excluido))
+  while(!feof(PonteiroPessoaArquivo) && (tmpPessoa.id != id || tmpPessoa.excluido != 0))
     fread(&tmpPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
 
   if (!feof(PonteiroPessoaArquivo)) {
@@ -1026,4 +1037,54 @@ int request(const char message[]) {
   }
 
    return 0;
+}
+
+void moldura(int width, int height, int color) {
+  int index;
+  int x = wherex();
+  int y = wherey();
+
+  textcolor(color);
+
+  // arc left top
+  gotoxy(x, y);
+  printf("%s", ARC_DOWN_RIGHT);
+
+  // arc right top
+  gotoxy(width, y);
+  printf("%s", ARC_DOWN_LEFT);
+
+  // arc right bottom
+  gotoxy(width, height + y);
+  printf("%s", ARC_UP_LEFT);
+
+  // arc left bottom
+  gotoxy(x, height + y);
+  printf("%s", ARC_UP_RIGHT);
+
+  // top line
+  for (index = x + 1; index < width + x - 1; index++) {
+    gotoxy(index, y);
+    printf("%s", HORIZONTAL_LINE);
+  }
+
+  // bottom line
+  for (index = x + 1; index < width + x - 1; index++) {
+    gotoxy(index, y + height);
+    printf("%s", HORIZONTAL_LINE);
+  }
+
+  // left line
+  for (index = y + 1; index < height + y; index++) {
+    gotoxy(x, index);
+    printf("%s", VERTICAL_LINE);
+  }
+
+  // right line
+  for (index = y + 1; index < height + y; index++) {
+    gotoxy(width, index);
+    printf("%s", VERTICAL_LINE);
+  }
+  
+  textcolor(15);
 }
