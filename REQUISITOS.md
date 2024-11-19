@@ -31,7 +31,7 @@
 - [x] Deve ser possivel cadastrar uma pessoa
 - [x] Deve ser possivel editar uma pessoa
 - [x] Deve ser possivel consultar uma pessoa
-- [ ] Deve ser possivel excluir uma pessoa logicamente
+- [x] Deve ser possivel excluir uma pessoa logicamente
 - [ ] Deve ser possivel excluir uma pessoa fisicamente
 - [ ] Deve ser possivel consultar todos os dados das pessoas
 

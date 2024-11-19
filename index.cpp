@@ -119,11 +119,36 @@ void limparLinhas(int quantidadeDeOpcoes);
 int request(const char message[]);
 void moldura(int width, int height, int color);
 
+void ExcluirPessoasFisicamente() {
+  FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb");
+  Pessoa tempPessoa;
+
+  if (PonteiroPessoaArquivo != NULL) {
+    FILE * TempPonteiroPessoaArquivo = fopen("biblioteca/pessoa-temp.dat", "wb");
+
+    do {
+      fread(&tempPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+
+      if (!tempPessoa.excluido) {
+        fwrite(&tempPessoa, sizeof(Pessoa), 1, TempPonteiroPessoaArquivo); 
+      }
+    } while(!feof(PonteiroPessoaArquivo));
+
+    fclose(PonteiroPessoaArquivo);
+    fclose(TempPonteiroPessoaArquivo);
+
+    remove("biblioteca/pessoa.dat");
+    rename("biblioteca/pessoa-temp.dat", "biblioteca/pessoa.dat");
+  }
+}
+
 int main() {
   #ifdef DOS
     SetConsoleOutputCP(CP_UTF8);
-  #endif 
+  #endif
 
+
+  ExcluirPessoasFisicamente();
   int opcaoSelecionada;
   char opcoesPrincipais[10][100] = {
     "Autor",
@@ -450,12 +475,12 @@ void ExcluirPessoa() {
 }
 
 int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id) {
-  Pessoa tmpPessoa; 
+  Pessoa tempPessoa;
 
   fseek(PonteiroPessoaArquivo, 0, 0);
-  fread(&tmpPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
-  while(!feof(PonteiroPessoaArquivo) && (tmpPessoa.id != id || tmpPessoa.excluido != 0))
-    fread(&tmpPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+  fread(&tempPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+  while(!feof(PonteiroPessoaArquivo) && (tempPessoa.id != id || tempPessoa.excluido != 0))
+    fread(&tempPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
 
   if (!feof(PonteiroPessoaArquivo)) {
     return ftell(PonteiroPessoaArquivo) - sizeof(Pessoa);
