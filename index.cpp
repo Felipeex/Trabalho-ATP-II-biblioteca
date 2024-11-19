@@ -294,6 +294,7 @@ void CadastrarPessoa() {
 
   do {
     if (PonteiroPessoaArquivo != NULL) {
+      fseek(PonteiroPessoaArquivo, 0, 2);
       ultimoId = ftell(PonteiroPessoaArquivo) / sizeof(Pessoa);
       printf("%d %d %d", ftell(PonteiroPessoaArquivo), sizeof(Pessoa), ftell(PonteiroPessoaArquivo) / sizeof(Pessoa));
       novaPessoa.id = ultimoId + 1;
