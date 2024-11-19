@@ -382,6 +382,7 @@ void EditarPessoa() {
       } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
     } else printf("\n Não foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
+  fclose (PonteiroPessoaArquivo);
 }
 
 int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id) {
@@ -631,48 +632,45 @@ void ExibirTodosAutores(void) {
 
 // Altera
 void AlterarAutor(void) {
-  FILE *ptr;
-  int id, pos;
+  FILE *ptr = fopen ("biblioteca/autor.dat", "rb+");;
+  int pos;
   Autor AuxAutor;
 
-  ptr = fopen ("biblioteca/autor.dat", "rb+");
-  if (ptr != NULL) {
-    printf ("ID do Autor: ");
-    scanf ("%d", &id);
-    while (id != 0) {
-      pos = BuscaAutorId(ptr, id);
+  do {
+    if (ptr != NULL) {
+      printf(NORMAL "\nFoneça o ID do autor para editar ou zero para finalizar: ");
+      scanf("%d", &AuxAutor.id);
+
+      pos = BuscaAutorId (ptr, AuxAutor.id);
       if (pos >= 0) {
         fseek(ptr, pos, 0);
         fread (&AuxAutor, sizeof(Autor), 1, ptr);
-        printf ("<<<<< Dados do Autor >>>>\n");
-        printf ("ID: %d\n", id);
-        printf ("Nome: %s\n", AuxAutor.nome);
-        printf ("Nacionalidade: %s\n", AuxAutor.nacionalidade);
-        printf ("--------------------------------------------\n");
-        printf ("Digite o Novo nome do Autor: ");
-        fflush(stdin);
-        gets(AuxAutor.nome);
-        printf ("Digite a nacionalidade do Autor: ");
-        fflush(stdin);
-        gets(AuxAutor.nacionalidade);
-        printf ("Confirma Alteração? (S/N)\n");
-        if (toupper(getch()) == 'S') {
-          fseek(ptr, pos, 0);
-          fwrite(&AuxAutor, sizeof(Autor), 1, ptr);
-          printf ("Dados Alterados!!\n");
-        }
-      }        
-      else 
-        printf ("Autor desconhecido!!\n");
 
-      printf ("[0] - SAIR\n");
-      printf ("ID do Autor: ");
-      scanf ("%d", &id);
-    }
-    fclose(ptr);
-  }   
-  else 
-    printf ("Erro na abertura do Arquivo\n");
+        printf (CYAN "ID: " NORMAL "%d\n", AuxAutor.id);
+        printf (CYAN "Nome: " NORMAL "%s\n", AuxAutor.nome);
+        printf (CYAN "Nacionalidade: " NORMAL "%s\n", AuxAutor.nacionalidade);
+
+        if (request("Você quer editar esse Autor?")) {
+          printf (RED "\nNovos dados do autor de número " NORMAL "#%d\n", AuxAutor.id);
+
+          printf ("Nome: ");
+          fflush(stdin);
+          gets(AuxAutor.nome);
+
+          printf ("Nacionalidade: ");
+          fflush(stdin);
+          gets(AuxAutor.nacionalidade);
+
+          if (request("Você deseja salvar as alterações?")) {
+            fseek (ptr, pos, 0);
+            fwrite (&AuxAutor, sizeof(Autor), 1, ptr);
+            limparLinhas (17);
+          }
+        } else limparLinhas (9);
+      } else printf (YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, AuxAutor.id);
+    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+  } while (ptr != NULL && AuxAutor.id != 0);
+  fclose(ptr);
 }
 
 void AlterarLivro (void) {
@@ -680,43 +678,42 @@ void AlterarLivro (void) {
   Livro AuxLivro;
   int pos;
 
-  if (ptr != NULL) {
-    printf ("ID do Livro: ");
-    scanf ("%d", &AuxLivro.id);
-    while (AuxLivro.id != 0) {
-      pos = BuscaLivroId (ptr, AuxLivro.id);
-      if (pos >= 0) {
-        fseek(ptr, pos, 0);
-        fread(&AuxLivro, sizeof(Livro), 1, ptr);
-        printf ("Dados Encontrados:");
-        printf ("ID: %d\n", AuxLivro.id);
-        printf ("Titulo do Livro: %s\n", AuxLivro.titulo);
-        printf ("Ano de Publicação: %d", AuxLivro.anoPublicacao);
-        printf ("---------------------------------------------------\n");
-        printf ("Digite o Novo Titulo: ");
-        fflush(stdin);
-        gets(AuxLivro.titulo);
-        printf ("Ano de Publicação: ");
-        scanf ("%d", &AuxLivro.anoPublicacao);
-        printf ("Deseja fazer a Alteração? (S/N)\n");
-        if (toupper(getch()) == 'S') {
-          fseek(ptr, pos, 0);
-          fwrite(&AuxLivro, sizeof(Livro), 1, ptr);
-          printf ("Dados Alterados!!\n");
-        } 
-        else 
-          printf ("Alteraçao cancelada!!\n");
-      }     
-      else 
-        printf ("Livro não cadastrado!!\n");
+  do {
+    if (ptr != NULL) {
+      printf(NORMAL "\nFoneça o ID do livro para editar ou zero para finalizar: ");
+      scanf("%d", &AuxLivro.id);
 
-      printf ("ID do Livro: ");
-      scanf ("%d", &AuxLivro.id);
-    }
-    fclose(ptr);
-  }   
-  else 
-    printf ("Erro na Abertura do Arquivo!!\n");
+      pos = BuscaLivroId (ptr, AuxLivro.id);
+
+      if (pos >= 0) {
+        fseek (ptr, pos, 0);
+        fread (&AuxLivro, sizeof(Livro), 1, ptr);
+
+        printf (CYAN "ID: " NORMAL "%d\n", AuxLivro.id);
+        printf (CYAN "Titulo: " NORMAL "%s\n", AuxLivro.titulo);
+        printf (CYAN "Ano de Publicação: " NORMAL "%d\n", AuxLivro.anoPublicacao);
+
+        if (request("Você quer editar esse Livro?")) {
+          printf (RED "\nNovos dados do livro de número " NORMAL "#%d\n", AuxLivro.id);
+
+          printf ("Título: ");
+          fflush (stdin);
+          gets (AuxLivro.titulo);
+
+          printf ("Ano de Publicação: ");
+          fflush(stdin);
+          scanf ("%d", &AuxLivro.anoPublicacao);
+
+          if (request("Você deseja salvar as alterações?")) {
+            fseek(ptr, pos, 0);
+            fwrite (&AuxLivro, sizeof(Livro), 1, ptr);
+            limparLinhas (17);
+          }
+        } limparLinhas(9);
+      } else printf (YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, AuxLivro.id);
+    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+  } while (ptr != NULL && AuxLivro.id != 0);
+  fclose (ptr);
 }
 
 //-------------------------------------------------------------------------
