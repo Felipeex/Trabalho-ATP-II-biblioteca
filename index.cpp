@@ -19,6 +19,7 @@
 #include "./lib/meuconio.h"
 #endif
 
+#include "./headers/cores.h"
 
 struct Data {
   int dia;
@@ -107,7 +108,6 @@ void tituloMenuPessoas();
 int menu(char options[][100], int studentsLogicSize);
 void tituloMenuPrincipal();
 void limparLinhas(int quantidadeDeOpcoes);
-void Executar (int pos);
 
 int main() {
   int opcaoSelecionada;
@@ -294,15 +294,17 @@ void CadastrarPessoa() {
 
   do {
     if (PonteiroPessoaArquivo != NULL) {
+      ultimoId = ftell(PonteiroPessoaArquivo) / sizeof(Pessoa);
+      novaPessoa.id = ultimoId + 1;
+
+      printf(RED "\nDados do nova pessoa de número " NORMAL "#%d\n", novaPessoa.id);
+
       printf("Nome: ");
       fflush(stdin);
       gets(novaPessoa.nome);
 
-      if (strlen(novaPessoa.nome) > 1) {
-        ultimoId = ftell(PonteiroPessoaArquivo) / sizeof(Autor);
-        novaPessoa.id = ultimoId + 1;
-
-        printf("Telefone | EX: (18) 99678-5231: ");
+      if (strlen(novaPessoa.nome) >= 1) {
+        printf("Telefone EX: (18) 99678-5231: ");
         fflush(stdin);
         gets(novaPessoa.telefone);
 
@@ -315,7 +317,7 @@ void CadastrarPessoa() {
         fwrite(&novaPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
       }
     } else printf("\n Não foi possivel abrir o arquivo pessoa.");
-  } while(PonteiroPessoaArquivo != NULL && strlen(novaPessoa.nome) > 1);
+  } while(PonteiroPessoaArquivo != NULL && strlen(novaPessoa.nome) >= 1);
 }
 
 void EditarPessoa() {
@@ -332,7 +334,33 @@ void EditarPessoa() {
       if (indice >= 0) {
         fseek(PonteiroPessoaArquivo, indice, 0);
         fread(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
-        printf("Novo Nome (Nome Atual: %s)", PessoaParaEditar.nome);
+        
+        printf("ID: %d\n", PessoaParaEditar.id);
+        printf("Nome: %s\n", PessoaParaEditar.nome);
+        printf("Telefone: %s\n", PessoaParaEditar.telefone);
+        printf("Endereço: %s\n", PessoaParaEditar.endereco);
+
+        printf("\nNovos Dados\n");
+
+        printf("Nome: ");
+        fflush(stdin);
+        gets(PessoaParaEditar.nome);
+
+        printf("Telefone | EX: (18) 99678-5231: ");
+        fflush(stdin);
+        gets(PessoaParaEditar.telefone);
+
+        printf("Endereço: ");
+        fflush(stdin);
+        gets(PessoaParaEditar.endereco);
+
+        /* printf("\nVocê deseja salvar as alterações\n [S] Sim [N] Não");
+
+        if (toupper(getch()) == 'S') {
+          fseek(PonteiroPessoaArquivo, indice, 0);
+          fwrite(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+        }  */
+
       } else printf("\n Essa pessoa não existe.");
     } else printf("\n Não foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
@@ -978,4 +1006,20 @@ void tituloMenuLivroAutor() {
     printf("\\________|\\__|    \\_/    \\__|       \\______/        \\_______|      \\__|  \\__| \\______/    \\____/  \\______/ \\__|      \n\n\n\n\n\n\n\n\n");
 
     textcolor(15);    
+}
+
+int request(const char message[]) {
+  printf("\n%s" GREEN "\n[S] Sim" RED " [N] Não\n" NORMAL, message);
+
+  int answer;
+
+  do {
+    answer = toupper(getch());
+  } while(answer != 'S' && answer != 'N');
+
+  if (answer == 'S') {
+    return 1;
+  }
+
+   return 0;
 }
