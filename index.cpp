@@ -79,6 +79,7 @@ void autorMenu();
 void tituloMenuAutor();
 void ExibirTodosAutores(void);
 void exclusaoAutoresMenu ();
+void ConsultarAutor(void);
 
 // Pessoa
 void CadastrarPessoa();
@@ -172,17 +173,15 @@ void autorMenu() {
     tituloMenuAutor();
     fflush(stdin);
     opcaoSelecionada = menu(opcoesAutor, 6);
-
     switch(opcaoSelecionada) {
       case 0:
-        printf ("Cadastro\n");
-        getch();
         CadastrarAutor();
         break;
       case 1:
         AlterarAutor();
         break;
       case 2:
+        ConsultarAutor();
         break;
       case 3:
         ExibirTodosAutores();
@@ -418,6 +417,7 @@ void livroAutorMenu() {
 
     switch (opcaoSelecionada){
       case 0:
+        CadastraLivroAutor();
         break;
       case 1:
         break;
@@ -563,43 +563,47 @@ void CadastrarLivro (void) {
 }
 
 void CadastraLivroAutor (void) {
-  FILE *ptr = fopen ("biblioteca/autorlivro.dat", "ab+");
+  FILE *ptrLivroAutor = fopen ("biblioteca/autorlivro.dat", "ab+");
   FILE *ptrLivro = fopen ("biblioteca/livro.dat", "rb");
   FILE *ptrAutor = fopen ("biblioteca/autor.dat", "rb");
   LivroAutor Aux;
   int idLivro, posLivro, idAutor, posAutor, posLivroAutor;
 
-  printf ("ID do Livro: ");
-  scanf ("%d", &idLivro);
-  while (idLivro != 0) {
-    fseek(ptrLivro, 0, 0);
-    posLivro = BuscaLivroId (ptrLivro, idLivro);
-    if (posLivro >= 0) {
-      fseek(ptrAutor, 0, 0);
-      printf ("ID do Autor: ");
-      scanf ("%d", &idAutor);
-      posAutor = BuscaAutorId(ptrAutor, idAutor);
-      if (posAutor >= 0) {
-        posLivroAutor = BuscaAutorLivro (ptr, idLivro, idAutor);
-        if (posLivroAutor == -1) {
-          Aux.idAutor = idAutor;
-          Aux.idLivro = idLivro;
-          Aux.excluido = 0;
-          fwrite(&Aux, sizeof(LivroAutor), 1, ptr);
-        } 
-        else 
-          printf ("Relacionamento de Autor e Livro já cadastrado!!\n");
-      }
-      else 
-        printf ("Autor não cadastrado!!\n");
-    }
-    else
-      printf ("Livro não cadastrado!!\n");
-    printf ("[0] - Sair\n");
+  do {
+    fseek(ptrLivroAutor, 0, 2);
+
+    printf (RED"\nDados do novo relacionamento de livro e autor:\n" NORMAL);
+
     printf ("ID do Livro: ");
+    fflush(stdin);
     scanf ("%d", &idLivro);
-  }
-  fclose(ptr);
+
+    if (idLivro > 0) {
+      fseek (ptrLivro, 0, 0);
+      posLivro = BuscaLivroId (ptrLivro, idLivro);
+
+      if (posLivro >= 0) {
+        fseek(ptrAutor, 0, 0);
+
+        printf ("ID Autor: ");
+        scanf("%d", &idAutor);
+
+        posAutor = BuscaAutorId (ptrAutor, idAutor);
+        if (posAutor >= 0) {
+          posLivroAutor = BuscaAutorLivro(ptrLivroAutor, idLivro, idAutor);
+          if (posLivroAutor == -1) {
+            Aux.idAutor = idAutor;
+            Aux.idLivro = idLivro;
+            Aux.excluido = 0;
+            fwrite (&Aux, sizeof(LivroAutor), 1, ptrLivroAutor);
+          } else (RED "Relacionamento já feito!\n" NORMAL);
+        } else (RED "Autor não cadastrado!\n" NORMAL);
+      } else (RED "Livro não cadastrado!\n" NORMAL);
+    } 
+    limparLinhas (5);
+    printf ("%d\n", idLivro);
+  } while (idLivro > 0);
+  fclose(ptrLivroAutor);
   fclose(ptrAutor);
   fclose(ptrLivro);
 }
@@ -847,38 +851,57 @@ void ExclusaoFisicaTodosDeLivro (void) {
 // Consultar
 
 void ConsultarAutor(void) {
-  FILE * ptr = fopen("biblioteca/autor.dat", "rb");
-  Autor Aux;
-  Livro AuxLivro;
-  int pos;
+  FILE * ptrAutor = fopen("biblioteca/autor.dat", "rb");
+  FILE * ptrLivroAutor = fopen ("biblioteca/livroautor.dat", "rb");
+  FILE * ptrLivro = fopen ("biblioteca/livro.dat", "rb");
 
-  if (ptr != NULL) {
-    do {
-      printf ("ID do Autor: ");
-      scanf ("%d", &Aux.id);
-      pos = BuscaAutorId(ptr, Aux.id);
+  Autor AuxAutor;
+  Livro AuxLivro; 
+  LivroAutor AuxLivroAutor;
+  int pos, idLivro;
+
+  do {
+    if (ptrAutor != NULL) {
+      printf(NORMAL "\nFoneça o ID do autor para consultar ou zero para finalizar: ");
+      scanf("%d", &AuxAutor.id);   
+
+      pos = BuscaAutorId (ptrAutor, AuxAutor.id);
       if (pos >= 0) {
-        FILE * ptrLivro = fopen ("biblioteca/livro.dat", "rb");
-        printf ("ID do Autor: %d\n", Aux.id);
-        printf ("Nome do Autor: %s\n", Aux.nome);
-        printf ("Nacionalidade: %s\n", Aux.nacionalidade);
-        printf ("<<<<<<< Livros que o Autor escreveu >>>>>>");
-        fseek(ptrLivro, 0, 0);
-        fread(&AuxLivro, sizeof(Livro), 1, ptrLivro);
-        while (!feof(ptrLivro)) {
-          if (AuxLivro.excluido != 1) {
-            printf ("Nome do livro: %s\n", AuxLivro.titulo);
-            printf ("Ano de publicação: %d\n", AuxLivro.anoPublicacao);
+        fseek (ptrAutor, pos, 0);
+        fread (&AuxAutor, sizeof(Autor), 1, ptrAutor);
+
+        printf (CYAN "ID: " NORMAL "#\"%d\"\n", AuxAutor.id);
+        printf (CYAN "Nome: " NORMAL "%s\n", AuxAutor.nome);
+        printf (CYAN "Nacionalidade: " NORMAL "%s\n", AuxAutor.nacionalidade);
+        printf (CYAN "\n----------------------------------------------\n" NORMAL);
+        
+        
+        if (ptrLivroAutor != NULL) {
+
+          fseek (ptrLivroAutor, 0, 0);
+          fread (&AuxLivroAutor, sizeof(LivroAutor), 1, ptrLivroAutor);
+          while (!feof(ptrLivroAutor)) {
+            if (AuxAutor.id == AuxLivroAutor.idAutor) {
+              fseek(ptrLivro, 0, 0);
+              fread (&AuxLivro, sizeof(Livro), 1, ptrLivro);
+              while (!feof(ptrLivro)) {
+                if (AuxLivro.id == AuxLivroAutor.idLivro) {
+                  printf (CYAN "ID: " NORMAL "#\"%d\"\n", AuxLivro.id);
+                  printf (CYAN "Titulo: " NORMAL "%s\n", AuxLivro.titulo);
+                  printf (CYAN "Ano de Publicação: " NORMAL "%d\n", AuxLivro.anoPublicacao);
+                }
+                fread (&AuxLivro, sizeof(Livro), 1, ptrLivro);
+              }
+            }
+            fread (&AuxLivroAutor, sizeof(LivroAutor), 1, ptrLivroAutor);
           }
-          fread(&AuxLivro, sizeof(Livro), 1, ptrLivro);
-        }
-        fclose (ptrLivro);
-      }
-    } while (Aux.id != 0);
-    fclose(ptr);
-  } 
-  else
-    printf ("Erro na Abertura do Arquivo\n");
+        } else printf (RED "Nenhum livro relacionado ao autor!\n" NORMAL);
+      } else printf (YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, AuxAutor.id);
+    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+  } while (ptrAutor != NULL && AuxAutor.id != 0);
+  fclose (ptrLivroAutor);
+  fclose (ptrLivro);
+  fclose(ptrAutor);
 }
 
 int menu(char opcoes[][100], int quantidadeDeOpcoes) {
