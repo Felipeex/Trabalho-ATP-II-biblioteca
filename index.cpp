@@ -83,7 +83,8 @@ void ConsultarAutor(void);
 
 // Pessoa
 void CadastrarPessoa();
-void EditarPessoa(); 
+void EditarPessoa();
+void ConsultarPessoa(); 
 int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id);
 
 //Livro Funções 
@@ -288,6 +289,7 @@ void pessoasMenu() {
         EditarPessoa();
         break;
       case 2:
+        ConsultarPessoa();
         break;
       case 3:
         break;
@@ -378,6 +380,35 @@ void EditarPessoa() {
             limparLinhas(17);
           }
         } else limparLinhas(9);
+      } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
+    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+  } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
+  fclose (PonteiroPessoaArquivo);
+}
+
+void ConsultarPessoa() {
+  FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
+  Pessoa PessoaParaEditar;
+  int indice;
+
+  do {
+    if (PonteiroPessoaArquivo != NULL) {
+      printf(NORMAL "\nFoneça o ID da pessoa para consultar ou zero para finalizar: ");
+      scanf("%d", &PessoaParaEditar.id);
+
+      indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaParaEditar.id);
+
+      if (indice >= 0) {
+        fseek(PonteiroPessoaArquivo, indice, 0);
+        fread(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+
+        printf(CYAN "ID: " NORMAL "%d\n", PessoaParaEditar.id);
+        printf(CYAN "Nome: " NORMAL "%s\n", PessoaParaEditar.nome);
+        printf(CYAN "Telefone: " NORMAL "%s\n", PessoaParaEditar.telefone);
+        printf(CYAN "Endereço: " NORMAL "%s\n", PessoaParaEditar.endereco);
+
+        getch();
+        limparLinhas(6);
       } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
     } else printf("\n Não foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
