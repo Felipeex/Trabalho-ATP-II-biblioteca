@@ -296,7 +296,6 @@ void CadastrarPessoa() {
     if (PonteiroPessoaArquivo != NULL) {
       fseek(PonteiroPessoaArquivo, 0, 2);
       ultimoId = ftell(PonteiroPessoaArquivo) / sizeof(Pessoa);
-      printf("%d %d %d", ftell(PonteiroPessoaArquivo), sizeof(Pessoa), ftell(PonteiroPessoaArquivo) / sizeof(Pessoa));
       novaPessoa.id = ultimoId + 1;
 
       printf(RED "\nDados do nova pessoa de número " NORMAL "#%d\n", novaPessoa.id);
@@ -319,6 +318,7 @@ void CadastrarPessoa() {
         fwrite(&novaPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
       }
 
+      limparLinhas(5);
     } else printf("\n Não foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && strlen(novaPessoa.nome) >= 1);
   fclose(PonteiroPessoaArquivo);
