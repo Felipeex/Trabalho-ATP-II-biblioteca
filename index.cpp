@@ -504,50 +504,63 @@ int BuscaAutorLivro (FILE *ptrAutorLivro, int idLivro, int idAutor) {
 
 // Cadastros
 void CadastrarAutor (void) {
-  FILE *ptr;
+  FILE *ptr = fopen ("biblioteca/autor.dat", "ab+");;
   Autor AutorAux;
 
-  ptr = fopen ("biblioteca/autor.dat", "ab+");
-  printf ("Nome do Autor: ");
-  fflush(stdin);
-  gets(AutorAux.nome);
-  while (strlen(AutorAux.nome) > 1) {
-    AutorAux.id = ftell(ptr) / sizeof(Autor) + 1;
-    printf ("Nacionalidade: ");
-    fflush(stdin);
-    gets(AutorAux.nacionalidade);
-    AutorAux.excluido = 0;
+  do {
+    if (ptr != NULL) {
+      fseek(ptr, 0, 2);
+      AutorAux.id = ftell(ptr) / sizeof(Autor) + 1;
 
-    fwrite (&AutorAux, sizeof(Autor), 1, ptr);
+      printf (RED"\n Dados do novo autor de número " NORMAL "#%d\n", AutorAux.id);
+      
+      printf ("Nome do Autor: ");
+      fflush(stdin);
+      gets(AutorAux.nome);
 
-    printf ("Nome do Autor: ");
-    fflush(stdin);
-    gets(AutorAux.nome);
-  }
+      if (strlen(AutorAux.nome) >= 1) {
+        printf ("Nacionalidade: ");
+        fflush(stdin);
+        gets(AutorAux.nacionalidade);
+
+        AutorAux.excluido = 0;
+    
+        fwrite (&AutorAux, sizeof(Autor), 1, ptr);
+      }
+      limparLinhas(5);
+    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+  } while (ptr != NULL && strlen(AutorAux.nome) >= 1);
   fclose (ptr);
 } 
 
 void CadastrarLivro (void) {
-  FILE *ptr;
+  FILE *ptr = fopen ("biblioteca/livro.dat", "ab+");;
   Livro LivroAux;
 
-  ptr = fopen ("biblioteca/livro.dat", "ab+");
-  printf ("Titulo do Livro: ");
-  fflush(stdin);
-  gets(LivroAux.titulo);
-  while (strlen(LivroAux.titulo) > 1) {
-    LivroAux.id = ftell(ptr) / sizeof(Livro) + 1;
-    printf ("Ano de Publicação do Livro: ");
-    fflush(stdin);
-    scanf ("%d", &LivroAux.anoPublicacao);
-    LivroAux.excluido = 0;
+  do {
+    if (ptr != NULL) {
+      fseek(ptr, 0, 2);
+      LivroAux.id = ftell(ptr) / sizeof(Livro) + 1;
 
-    fwrite(&LivroAux, sizeof(Livro), 1, ptr);
+      printf (RED"\nDados do novo livro de número " NORMAL "#%d\n", LivroAux.id);
 
-    printf ("Titulo do Livro: ");
-    fflush(stdin);
-    gets(LivroAux.titulo);
-  }
+      printf ("Titulo do Livro: ");
+      fflush(stdin);
+      gets(LivroAux.titulo);
+
+      if ((strlen(LivroAux.titulo) >= 1)) {
+        printf ("Ano de Publicação do Livro: ");
+        fflush(stdin);
+        scanf ("%d", &LivroAux.anoPublicacao);
+
+        LivroAux.excluido = 0;
+
+        fwrite(&LivroAux, sizeof(Livro), 1, ptr);
+      }
+      limparLinhas(5);
+
+    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+  } while (ptr != NULL && strlen(LivroAux.titulo) >= 1);
   fclose(ptr);
 }
 
