@@ -342,7 +342,7 @@ void EditarPessoa() {
 
   do {
     if (PonteiroPessoaArquivo != NULL) {
-      printf(RED "\nFoneça o ID da pessoa para editar ou zero para finalizar: \n");
+      printf(NORMAL "\nFoneça o ID da pessoa para editar ou zero para finalizar: ");
       scanf("%d", &PessoaParaEditar.id);
 
       indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaParaEditar.id);
@@ -351,32 +351,33 @@ void EditarPessoa() {
         fseek(PonteiroPessoaArquivo, indice, 0);
         fread(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
 
-        moldura(100, 5, 1);
-        
-        printf("ID: %d\n", PessoaParaEditar.id);
-        printf("Nome: %s\n", PessoaParaEditar.nome);
-        printf("Telefone: %s\n", PessoaParaEditar.telefone);
-        printf("Endereço: %s\n", PessoaParaEditar.endereco);
+        printf(CYAN "ID: " NORMAL "%d\n", PessoaParaEditar.id);
+        printf(CYAN "Nome: " NORMAL "%s\n", PessoaParaEditar.nome);
+        printf(CYAN "Telefone: " NORMAL "%s\n", PessoaParaEditar.telefone);
+        printf(CYAN "Endereço: " NORMAL "%s\n", PessoaParaEditar.endereco);
 
-        printf("\nNovos Dados\n");
+        if (request("Você quer editar essa Pessoa?")) {
+          printf(RED "\nNovos dados da pessoa de número " NORMAL "#%d\n", PessoaParaEditar.id);
 
-        printf("Nome: ");
-        fflush(stdin);
-        gets(PessoaParaEditar.nome);
+          printf("Nome: ");
+          fflush(stdin);
+          gets(PessoaParaEditar.nome);
 
-        printf("Telefone | EX: (18) 99678-5231: ");
-        fflush(stdin);
-        gets(PessoaParaEditar.telefone);
+          printf("Telefone | EX: (18) 99678-5231: ");
+          fflush(stdin);
+          gets(PessoaParaEditar.telefone);
 
-        printf("Endereço: ");
-        fflush(stdin);
-        gets(PessoaParaEditar.endereco);
+          printf("Endereço: ");
+          fflush(stdin);
+          gets(PessoaParaEditar.endereco);
 
-        if (request("Você deseja salvar as alterações")) {
-          fseek(PonteiroPessoaArquivo, indice, 0);
-          fwrite(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
-        }
-      } else printf("\n Essa pessoa não existe.");
+          if (request("Você deseja salvar as alterações")) {
+            fseek(PonteiroPessoaArquivo, indice, 0);
+            fwrite(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+            limparLinhas(17);
+          }
+        } else limparLinhas(9);
+      } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
     } else printf("\n Não foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
 }
