@@ -692,7 +692,7 @@ void CadastraLivroAutor (void) {
     } 
     limparLinhas (5);
     printf ("%d\n", idLivro);
-  } while (idLivro > 0);
+  } while (ptrLivroAutor != NULL && idLivro > 0);
   fclose(ptrLivroAutor);
   fclose(ptrAutor);
   fclose(ptrLivro);
@@ -992,6 +992,39 @@ void ConsultarAutor(void) {
   fclose (ptrLivroAutor);
   fclose (ptrLivro);
   fclose(ptrAutor);
+}
+//---------------------------------------------------------------------------------------
+// Ordenar
+
+//Ordenação por bolha
+void OrdenaAutorNacionalidade (void) {
+  FILE * PtrAutor = fopen ("biblioteca/autor.dat", "rb+");
+  int Qtd, i;
+  Autor Reg1, Reg2;
+
+  if (PtrAutor != NULL) {
+    fseek(PtrAutor, 0, 2);
+    Qtd = ftell(PtrAutor) / sizeof (Autor);
+    for ( ; Qtd > 1; Qtd--) {
+      i=0; 
+      while (i < Qtd-1) {
+        fseek (PtrAutor, i*sizeof(Autor), 0);
+        fread (&Reg1, sizeof(Autor), 1, PtrAutor);
+
+        fseek (PtrAutor, (i+1)*sizeof(Autor), 0);
+        fread (&Reg2, sizeof(Autor), 1, PtrAutor);
+        if (Reg1.nacionalidade[0] > Reg2.nacionalidade[0]) {
+          fseek (PtrAutor, (i+1)*sizeof(Autor), 0);
+          fwrite (&Reg1, sizeof(Autor), 1, PtrAutor);
+
+          fseek (PtrAutor, i*sizeof(Autor), 0);
+          fwrite (&Reg2, sizeof(Autor), 1, PtrAutor);
+        }
+        i++;
+      }
+    }
+  } else printf ("Erro na abertura do arquivo\n");
+  fclose (PtrAutor);
 }
 
 int menu(char opcoes[][100], int quantidadeDeOpcoes) {
