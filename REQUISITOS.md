@@ -22,9 +22,9 @@
 - [ ] Deve ser possivel editar um emprestimo
 - [ ] Deve ser possivel excluir um emprestimo logicamente
 - [ ] Deve ser possivel excluir um emprestimo fisicamente
-- [ ] Deve ser possivel consultar todos os dados dos emprestimos
 - [x] Deve ser possivel associar um livro a uma pessoa por emprestimo
 - [x] Deve ser possivel uma pessoa emprestar varios livros
+- [ ] Deve ser possivel consultar todos os dados dos emprestimos
 
 ### Pessoa - @Felipe
 

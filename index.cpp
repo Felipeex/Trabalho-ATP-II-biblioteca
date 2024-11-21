@@ -380,7 +380,13 @@ void CadastrarEmprestimo() {
   fclose(PonteiroEmprestimoArquivo);
 }
 
-void EditarEmprestimo() {}
+void EditarEmprestimo() {
+  FILE * PonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo.dat", "ab+");
+  Emprestimo emprestimoEditar;
+  Pessoa emprestimoPessoa;
+  Livro emprestimoLivro;
+  int ultimoId, indiceLivro, indicePessoa, indiceEmprestimo;
+}
 void ConsultarEmprestimo() {}
 void ExcluirEmprestimo() {}
 
@@ -487,111 +493,111 @@ void CadastrarPessoa() {
 
 void EditarPessoa() {
   FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
-  Pessoa PessoaParaEditar;
+  Pessoa PessoaEditar;
   int indice;
 
   do {
     if (PonteiroPessoaArquivo != NULL) {
       printf(NORMAL "\nForneça o ID da pessoa para editar ou zero para finalizar: ");
-      scanf("%d", &PessoaParaEditar.id);
+      scanf("%d", &PessoaEditar.id);
 
-      indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaParaEditar.id);
+      indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaEditar.id);
 
       if (indice >= 0) {
         fseek(PonteiroPessoaArquivo, indice, 0);
-        fread(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+        fread(&PessoaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
 
-        printf(CYAN "ID: " NORMAL "%d\n", PessoaParaEditar.id);
-        printf(CYAN "Nome: " NORMAL "%s\n", PessoaParaEditar.nome);
-        printf(CYAN "Telefone: " NORMAL "%s\n", PessoaParaEditar.telefone);
-        printf(CYAN "Endereço: " NORMAL "%s\n", PessoaParaEditar.endereco);
+        printf(CYAN "ID: " NORMAL "%d\n", PessoaEditar.id);
+        printf(CYAN "Nome: " NORMAL "%s\n", PessoaEditar.nome);
+        printf(CYAN "Telefone: " NORMAL "%s\n", PessoaEditar.telefone);
+        printf(CYAN "Endereço: " NORMAL "%s\n", PessoaEditar.endereco);
 
         if (request("Você quer editar essa Pessoa?")) {
-          printf(RED "\nNovos dados da pessoa de número " NORMAL "#%d\n", PessoaParaEditar.id);
+          printf(RED "\nNovos dados da pessoa de número " NORMAL "#%d\n", PessoaEditar.id);
 
           printf("Nome: ");
           fflush(stdin);
-          gets(PessoaParaEditar.nome);
+          gets(PessoaEditar.nome);
 
           printf("Telefone | EX: (18) 99678-5231: ");
           fflush(stdin);
-          gets(PessoaParaEditar.telefone);
+          gets(PessoaEditar.telefone);
 
           printf("Endereço: ");
           fflush(stdin);
-          gets(PessoaParaEditar.endereco);
+          gets(PessoaEditar.endereco);
 
           if (request("Você deseja salvar as alterações")) {
             fseek(PonteiroPessoaArquivo, indice, 0);
-            fwrite(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+            fwrite(&PessoaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
             limparLinhas(17);
           }
         } else limparLinhas(9);
-      } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
+      } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaEditar.id);
     } else printf("\nNão foi possivel abrir o arquivo pessoa.");
-  } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
+  } while(PonteiroPessoaArquivo != NULL && PessoaEditar.id != 0);
   fclose (PonteiroPessoaArquivo);
 }
 
 void ConsultarPessoa() {
   FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
-  Pessoa PessoaParaEditar;
+  Pessoa PessoaConsultar;
   int indice;
 
   do {
     if (PonteiroPessoaArquivo != NULL) {
       printf(NORMAL "\nForneça o ID da pessoa para consultar ou zero para finalizar: ");
-      scanf("%d", &PessoaParaEditar.id);
+      scanf("%d", &PessoaConsultar.id);
 
-      indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaParaEditar.id);
+      indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaConsultar.id);
 
       if (indice >= 0) {
         fseek(PonteiroPessoaArquivo, indice, 0);
-        fread(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+        fread(&PessoaConsultar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
 
-        printf(CYAN "ID: " NORMAL "%d\n", PessoaParaEditar.id);
-        printf(CYAN "Nome: " NORMAL "%s\n", PessoaParaEditar.nome);
-        printf(CYAN "Telefone: " NORMAL "%s\n", PessoaParaEditar.telefone);
-        printf(CYAN "Endereço: " NORMAL "%s\n", PessoaParaEditar.endereco);
+        printf(CYAN "ID: " NORMAL "%d\n", PessoaConsultar.id);
+        printf(CYAN "Nome: " NORMAL "%s\n", PessoaConsultar.nome);
+        printf(CYAN "Telefone: " NORMAL "%s\n", PessoaConsultar.telefone);
+        printf(CYAN "Endereço: " NORMAL "%s\n", PessoaConsultar.endereco);
 
         getch();
         limparLinhas(6);
-      } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
+      } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaConsultar.id);
     } else printf("\nNão foi possivel abrir o arquivo pessoa.");
-  } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
+  } while(PonteiroPessoaArquivo != NULL && PessoaConsultar.id != 0);
   fclose (PonteiroPessoaArquivo);
 }
 
 void ExcluirPessoa() {
   FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
-  Pessoa PessoaParaEditar;
+  Pessoa PessoaExcluir;
   int indice;
 
   do {
     if (PonteiroPessoaArquivo != NULL) {
       printf(NORMAL "\nForneça o ID da pessoa para excluir ou zero para finalizar: ");
-      scanf("%d", &PessoaParaEditar.id);
+      scanf("%d", &PessoaExcluir.id);
 
-      indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaParaEditar.id);
+      indice = BuscarPessoaPeloID(PonteiroPessoaArquivo, PessoaExcluir.id);
 
       if (indice >= 0) {
         fseek(PonteiroPessoaArquivo, indice, 0);
-        fread(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+        fread(&PessoaExcluir, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
 
-        printf(CYAN "ID: " NORMAL "%d\n", PessoaParaEditar.id);
-        printf(CYAN "Nome: " NORMAL "%s\n", PessoaParaEditar.nome);
-        printf(CYAN "Telefone: " NORMAL "%s\n", PessoaParaEditar.telefone);
-        printf(CYAN "Endereço: " NORMAL "%s\n", PessoaParaEditar.endereco);
+        printf(CYAN "ID: " NORMAL "%d\n", PessoaExcluir.id);
+        printf(CYAN "Nome: " NORMAL "%s\n", PessoaExcluir.nome);
+        printf(CYAN "Telefone: " NORMAL "%s\n", PessoaExcluir.telefone);
+        printf(CYAN "Endereço: " NORMAL "%s\n", PessoaExcluir.endereco);
 
         if (request("Você quer excluir essa Pessoa?")) {
-          PessoaParaEditar.excluido = 1;
+          PessoaExcluir.excluido = 1;
 
           fseek(PonteiroPessoaArquivo, indice, 0);
-          fwrite(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+          fwrite(&PessoaExcluir, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
         } else limparLinhas(9);
-      } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
+      } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaExcluir.id);
     } else printf("\nNão foi possivel abrir o arquivo pessoa.");
-  } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
+  } while(PonteiroPessoaArquivo != NULL && PessoaExcluir.id != 0);
   fclose (PonteiroPessoaArquivo);
 }
 
