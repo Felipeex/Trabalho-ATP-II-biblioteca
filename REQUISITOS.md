@@ -21,8 +21,8 @@
 - [x] Deve ser possivel cadastrar um emprestimo
 - [x] Deve ser possivel editar um emprestimo
 - [x] Deve ser possivel consultar um emprestimo
-- [ ] Deve ser possivel excluir um emprestimo logicamente
-- [ ] Deve ser possivel excluir um emprestimo fisicamente
+- [x] Deve ser possivel excluir um emprestimo logicamente
+- [x] Deve ser possivel excluir um emprestimo fisicamente
 - [x] Deve ser possivel associar um livro a uma pessoa por emprestimo
 - [x] Deve ser possivel uma pessoa emprestar varios livros
 - [ ] Deve ser possivel consultar todos os dados dos emprestimos

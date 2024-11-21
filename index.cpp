@@ -150,6 +150,29 @@ void ExcluirPessoasFisicamente() {
   }
 }
 
+void ExcluirEmprestimosFisicamente() {
+  FILE * PonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo.dat", "rb");
+  Emprestimo tempEmprestimo;
+
+  if (PonteiroEmprestimoArquivo != NULL) {
+    FILE * TempPonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo-temp.dat", "wb");
+
+    do {
+      fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+
+      if (!tempEmprestimo.excluido) {
+        fwrite(&tempEmprestimo, sizeof(Emprestimo), 1, TempPonteiroEmprestimoArquivo); 
+      }
+    } while(!feof(PonteiroEmprestimoArquivo));
+
+    fclose(PonteiroEmprestimoArquivo);
+    fclose(TempPonteiroEmprestimoArquivo);
+
+    remove("biblioteca/emprestimo.dat");
+    rename("biblioteca/emprestimo-temp.dat", "biblioteca/emprestimo.dat");
+  }
+}
+
 int main() {
   #ifdef DOS
     SetConsoleOutputCP(CP_UTF8);
@@ -157,6 +180,7 @@ int main() {
 
 
   ExcluirPessoasFisicamente();
+  ExcluirEmprestimosFisicamente();
   int opcaoSelecionada;
   char opcoesPrincipais[10][100] = {
     "Autor",
