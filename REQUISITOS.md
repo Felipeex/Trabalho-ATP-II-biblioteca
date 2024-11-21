@@ -23,8 +23,8 @@
 - [ ] Deve ser possivel excluir um emprestimo logicamente
 - [ ] Deve ser possivel excluir um emprestimo fisicamente
 - [ ] Deve ser possivel consultar todos os dados dos emprestimos
-- [ ] Deve ser possivel associar um livro a uma pessoa por emprestimo
-- [ ] Deve ser possivel uma pessoa emprestar varios livros
+- [x] Deve ser possivel associar um livro a uma pessoa por emprestimo
+- [x] Deve ser possivel uma pessoa emprestar varios livros
 
 ### Pessoa - @Felipe
 
@@ -58,11 +58,11 @@
 - [x] Todos os “id” são valores inteiros.
 - [x] A data é definida por uma struct, onde dia, mês e ano são inteiros.
 - [x] Cada tabela deve ter uma chave primária e relacionamentos entre elas
-- [ ] As datas deveram ser validadas.
+- [x] As datas deveram ser validadas.
 - [ ] Gerar dados para os arquivos
 - [ ] Livro Autor: Os dois campos juntos (ID Autor, ID Livro), formam a chave primária desta tabela.
 
 # Regras de Negócio
 
-- [ ] As datas deveram ser validas.
-- [ ] Emprestimo: A data de emprestimo tem que ser depois da data de devolução
+- [x] As datas deveram ser validas.
+- [x] Emprestimo: A data de emprestimo tem que ser depois da data de devolução
