@@ -381,11 +381,83 @@ void CadastrarEmprestimo() {
 }
 
 void EditarEmprestimo() {
-  FILE * PonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo.dat", "ab+");
+  FILE * PonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo.dat", "rb+");
   Emprestimo emprestimoEditar;
   Pessoa emprestimoPessoa;
   Livro emprestimoLivro;
   int ultimoId, indiceLivro, indicePessoa, indiceEmprestimo;
+  
+  do {
+    if (PonteiroEmprestimoArquivo != NULL) {
+      printf(NORMAL "\nForneça o ID da " CYAN "PESSOA" NORMAL " para o editar o emprestimo ou zero para sair: ");
+      scanf("%d", &emprestimoPessoa.id);
+
+      if (emprestimoPessoa.id != 0) {
+        FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
+
+        if (PonteiroPessoaArquivo != NULL) {
+          indicePessoa = BuscarPessoaPeloID(PonteiroPessoaArquivo, emprestimoPessoa.id);
+
+          if (indicePessoa >= 0) {
+            fseek(PonteiroPessoaArquivo, indicePessoa, 0);
+            fread(&emprestimoPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+            fclose(PonteiroPessoaArquivo);
+
+            printf(CYAN "ID: " NORMAL "%d\n", emprestimoPessoa.id);
+            printf(CYAN "Nome: " NORMAL "%s\n", emprestimoPessoa.nome);
+            printf(CYAN "Telefone: " NORMAL "%s\n", emprestimoPessoa.telefone);
+            printf(CYAN "Endereço: " NORMAL "%s\n", emprestimoPessoa.endereco);
+
+            if (request("Os dados da " CYAN "PESSOA" NORMAL " estão corretos?")) {
+              printf(NORMAL "\nForneça o ID do " CYAN "LIVRO" NORMAL " para editar o emprestimo: ");
+              scanf("%d", &emprestimoLivro.id);
+
+              FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb+");
+
+              if (PonteiroLivroArquivo != NULL) {
+                indiceLivro = BuscaLivroId(PonteiroLivroArquivo, emprestimoLivro.id);
+
+                if (indiceLivro >= 0) {
+                  fseek(PonteiroLivroArquivo, indiceLivro, 0);
+                  fread(&emprestimoLivro, sizeof(Livro), 1, PonteiroLivroArquivo);
+                  fclose(PonteiroLivroArquivo);
+
+                  printf(CYAN "ID: " NORMAL "%d\n", emprestimoLivro.id);
+                  printf(CYAN "Nome: " NORMAL "%s\n", emprestimoLivro.titulo);
+                  printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
+
+                  if (request("Os dados do " CYAN "LIVRO" NORMAL " estão corretos?")) {
+                    indiceEmprestimo = BuscarEmprestimo(PonteiroEmprestimoArquivo, emprestimoPessoa.id, emprestimoLivro.id);
+
+                    if (indiceEmprestimo >= 0) {
+                      fseek(PonteiroEmprestimoArquivo, indiceEmprestimo, 0);
+                      fread(&emprestimoEditar, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+
+                      printf(CYAN "\nData de empretimo: " NORMAL "%d/%d/%d\n", emprestimoEditar.dataEmprestimo.dia, emprestimoEditar.dataEmprestimo.mes, emprestimoEditar.dataEmprestimo.ano);
+                      printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimoEditar.dataEmprestimo.dia, emprestimoEditar.dataEmprestimo.mes, emprestimoEditar.dataEmprestimo.ano);
+
+                      if (request("Você deseja editar esses dados?")) {
+                        printf(NORMAL "\nForneça a nova data de emprestimo (EX: 00 00 0000): ");
+                        scanf("%d%d%d", &emprestimoEditar.dataEmprestimo.dia, &emprestimoEditar.dataEmprestimo.mes, &emprestimoEditar.dataEmprestimo.ano);
+                        printf(NORMAL "Forneça a nova data de devolução (EX: 00 00 0000): ");
+                        scanf("%d%d%d", &emprestimoEditar.dataDevolucao.dia, &emprestimoEditar.dataDevolucao.mes, &emprestimoEditar.dataDevolucao.ano);
+
+                        if (dataDeDevolucaoValida(emprestimoEditar.dataEmprestimo, emprestimoEditar.dataDevolucao) == 1) {
+                          fseek(PonteiroEmprestimoArquivo, indiceEmprestimo, 0);
+                          fwrite(&emprestimoEditar, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+                        } else { printf(RED "[ERROR] Você precisa definir uma data de devolução valida.\n" NORMAL); getch(); limparLinhas(18); }
+                      } else { limparLinhas(23); }
+                    } else { printf(YELLOW "[AVISO] Esse emprestimo não existe.\n" NORMAL); getch(); limparLinhas(18); }
+                  } else { limparLinhas(17); }
+                } else { printf(YELLOW "[AVISO] O ID do livro: \"%d\" não existe.\n" NORMAL, emprestimoLivro.id); getch(); limparLinhas(12); }
+              } else printf("\nNão foi possivel abrir o arquivo livro.");
+            } else { limparLinhas(9); }
+          } else { printf(YELLOW "[AVISO] O ID da pessoa: \"%d\" não existe.\n" NORMAL, emprestimoPessoa.id); getch(); limparLinhas(3); }
+        } else printf("\nNão foi possivel abrir o arquivo pessoa."); 
+      }
+    }
+  } while(PonteiroEmprestimoArquivo != NULL && emprestimoPessoa.id != 0);
+  fclose(PonteiroEmprestimoArquivo);
 }
 void ConsultarEmprestimo() {}
 void ExcluirEmprestimo() {}
