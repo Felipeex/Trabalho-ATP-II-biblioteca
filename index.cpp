@@ -81,12 +81,23 @@ void ExibirTodosAutores(void);
 void exclusaoAutoresMenu ();
 void ConsultarAutor(void);
 
+// Emprestimo
+void CadastrarEmprestimo();
+void EditarEmprestimo();
+void ConsultarEmprestimo();
+void ExcluirEmprestimo();
+int BuscarEmprestimo(FILE * PonteiroEmprestimoArquivo, int idPessoa, int idLivro);
+void emprestimoMenu();
+void tituloMenuEmprestimo();
+
 // Pessoa
 void CadastrarPessoa();
 void EditarPessoa();
 void ConsultarPessoa(); 
 void ExcluirPessoa(); 
 int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id);
+void pessoasMenu();
+void tituloMenuPessoas();
 
 //Livro Funções 
 void CadastrarLivro (void);
@@ -102,15 +113,6 @@ int BuscaAutorLivro (FILE *ptrAutorLivro, int idLivro, int idAutor);
 void CadastraLivroAutor (void);
 void tituloMenuLivroAutor();
 void livroAutorMenu();
-
-// Emprestimo Funcoes
-void emprestimoMenu();
-void tituloMenuEmprestimo();
-
-//Pessoas Funcoes
-void pessoasMenu();
-void tituloMenuPessoas();
-
 
 // Outras
 int menu(char options[][100], int studentsLogicSize);
@@ -264,31 +266,113 @@ void emprestimoMenu() {
     "Cadastrar Emprestimo",
     "Alterar Emprestimo",
     "Consultar Emprestimo",
-    "Exibir Emprestimos",
     "Excluir Emprestimo",
-    "Ordenar Emprestimos",
   };
 
   do {
     clrscr();
     tituloMenuEmprestimo();
-    opcaoSelecionada = menu(opcoesEmprestimo, 6);
+    opcaoSelecionada = menu(opcoesEmprestimo, 4);
 
     switch (opcaoSelecionada) {
       case 0:
+        CadastrarEmprestimo();
         break;
       case 1:
+        EditarEmprestimo();
         break;
       case 2:
+        ConsultarEmprestimo();
         break;
       case 3:
-        break;
-      case 4:
-        break;
-      case 5: 
+        ExcluirEmprestimo();
         break;
     }
   } while (opcaoSelecionada != -1);
+}
+
+void CadastrarEmprestimo() {
+  FILE * PonteiroEmprestimoArquivo = fopen("emprestimo.dat", "ab+");
+  Emprestimo novoEmprestimo;
+  Pessoa emprestimoPessoa;
+  Livro emprestimoLivro;
+  int ultimoId, indiceLivro, indicePessoa, indiceEmprestimo;
+  
+  do {
+    if (PonteiroEmprestimoArquivo != NULL) {
+      fseek(PonteiroEmprestimoArquivo, 0, 2);
+      ultimoId = ftell(PonteiroEmprestimoArquivo) / sizeof(Pessoa);
+      novoEmprestimo.id = ultimoId + 1;
+
+      printf(NORMAL "\nFoneça o ID da " CYAN "PESSOA" NORMAL " para o emprestimo ou zero para sair: ");
+      scanf("%d", &emprestimoPessoa.id);
+
+      if (emprestimoPessoa.id != 0) {
+        FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
+
+        if (PonteiroPessoaArquivo != NULL) {
+          indicePessoa = BuscarPessoaPeloID(PonteiroPessoaArquivo, emprestimoPessoa.id);
+
+          if (indicePessoa >= 0) {
+            fseek(PonteiroPessoaArquivo, indicePessoa, 0);
+            fread(&emprestimoPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+
+            printf(CYAN "ID: " NORMAL "%d\n", emprestimoPessoa.id);
+            printf(CYAN "Nome: " NORMAL "%s\n", emprestimoPessoa.nome);
+            printf(CYAN "Telefone: " NORMAL "%s\n", emprestimoPessoa.telefone);
+            printf(CYAN "Endereço: " NORMAL "%s\n", emprestimoPessoa.endereco);
+
+            if (request("Os dados da " CYAN "PESSOA" NORMAL " estão corretos?")) {
+              printf(NORMAL "\nFoneça o ID do " CYAN "LIVRO" NORMAL " para o emprestimo: ");
+              scanf("%d", &emprestimoLivro.id);
+
+              FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb+");
+
+              if (PonteiroLivroArquivo != NULL) {
+                indiceLivro = BuscaLivroId(PonteiroLivroArquivo, emprestimoLivro.id);
+
+                if (indiceLivro >= 0) {
+                  indiceEmprestimo = BuscarEmprestimo(PonteiroEmprestimoArquivo, emprestimoPessoa.id, emprestimoLivro.id);
+
+                  if (indiceEmprestimo < 0) {
+                    fseek(PonteiroLivroArquivo, indiceLivro, 0);
+                    fread(&emprestimoLivro, sizeof(Livro), 1, PonteiroLivroArquivo);
+
+                    printf(CYAN "ID: " NORMAL "%d\n", emprestimoLivro.id);
+                    printf(CYAN "Nome: " NORMAL "%s\n", emprestimoLivro.titulo);
+                    printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
+
+                    if (request("Os dados do " CYAN "LIVRO" NORMAL " estão corretos?")) {
+                      fwrite(&novoEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+                    }
+                  } else printf(YELLOW "[AVISO] O %s já emprestou esse o livro de titulo \"%s\".\n" NORMAL, emprestimoPessoa.nome, emprestimoLivro.titulo);
+                } else { printf(YELLOW "[AVISO] O ID do livro: \"%d\" não existe.\n" NORMAL, emprestimoLivro.id); getch(); limparLinhas(3); }
+              } else printf("\nNão foi possivel abrir o arquivo livro.");
+            } else { limparLinhas(9); }
+          } else { printf(YELLOW "[AVISO] O ID da pessoa: \"%d\" não existe.\n" NORMAL, emprestimoPessoa.id); getch(); limparLinhas(3); }
+        } else printf("\nNão foi possivel abrir o arquivo pessoa."); 
+      }
+    }
+  } while(PonteiroEmprestimoArquivo != NULL && emprestimoPessoa.id != 0);
+}
+
+void EditarEmprestimo() {}
+void ConsultarEmprestimo() {}
+void ExcluirEmprestimo() {}
+
+int BuscarEmprestimo(FILE * PonteiroEmprestimoArquivo, int idPessoa, int idLivro) {
+  Emprestimo tempEmprestimo;
+
+  fseek(PonteiroEmprestimoArquivo, 0, 0);
+  fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+  while(!feof(PonteiroEmprestimoArquivo) && (tempEmprestimo.idPessoa != idPessoa || tempEmprestimo.idLivro != idLivro || tempEmprestimo.excluido != 0))
+    fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+
+  if (!feof(PonteiroEmprestimoArquivo)) {
+    return ftell(PonteiroEmprestimoArquivo) - sizeof(Emprestimo);
+  }
+
+  return -1;
 }
 
 void pessoasMenu() {
@@ -297,14 +381,13 @@ void pessoasMenu() {
     "Cadastrar Pessoa",
     "Alterar Pessoa",
     "Consultar Pessoa",
-    "Excluir Pessoa",
-    "Ordenar Pessoa"
+    "Excluir Pessoa"
   };
 
   do {
     clrscr();
     tituloMenuPessoas();
-    opcaoSelecionada = menu(opcoesPessoas, 5);
+    opcaoSelecionada = menu(opcoesPessoas, 4);
 
     switch (opcaoSelecionada){
       case 0:
@@ -318,10 +401,6 @@ void pessoasMenu() {
         break;
       case 3:
         ExcluirPessoa();
-        break;
-      case 4:
-        break;
-      case 5:
         break;
     }
   } while (opcaoSelecionada != -1);
@@ -359,7 +438,7 @@ void CadastrarPessoa() {
       }
 
       limparLinhas(5);
-    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+    } else printf("\nNão foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && strlen(novaPessoa.nome) >= 1);
   fclose(PonteiroPessoaArquivo);
 }
@@ -407,7 +486,7 @@ void EditarPessoa() {
           }
         } else limparLinhas(9);
       } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
-    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+    } else printf("\nNão foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
   fclose (PonteiroPessoaArquivo);
 }
@@ -436,7 +515,7 @@ void ConsultarPessoa() {
         getch();
         limparLinhas(6);
       } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
-    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+    } else printf("\nNão foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
   fclose (PonteiroPessoaArquivo);
 }
@@ -469,7 +548,7 @@ void ExcluirPessoa() {
           fwrite(&PessoaParaEditar, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
         } else limparLinhas(9);
       } else printf(YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, PessoaParaEditar.id);
-    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+    } else printf("\nNão foi possivel abrir o arquivo pessoa.");
   } while(PonteiroPessoaArquivo != NULL && PessoaParaEditar.id != 0);
   fclose (PonteiroPessoaArquivo);
 }
@@ -762,7 +841,7 @@ void AlterarAutor(void) {
           }
         } else limparLinhas (9);
       } else printf (YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, AuxAutor.id);
-    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+    } else printf("\nNão foi possivel abrir o arquivo pessoa.");
   } while (ptr != NULL && AuxAutor.id != 0);
   fclose(ptr);
 }
@@ -805,7 +884,7 @@ void AlterarLivro (void) {
           }
         } limparLinhas(9);
       } else printf (YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, AuxLivro.id);
-    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+    } else printf("\nNão foi possivel abrir o arquivo pessoa.");
   } while (ptr != NULL && AuxLivro.id != 0);
   fclose (ptr);
 }
@@ -987,7 +1066,7 @@ void ConsultarAutor(void) {
           }
         } else printf (RED "Nenhum livro relacionado ao autor!\n" NORMAL);
       } else printf (YELLOW "[AVISO] O ID: \"%d\" não existe.\n" NORMAL, AuxAutor.id);
-    } else printf("\n Não foi possivel abrir o arquivo pessoa.");
+    } else printf("\nNão foi possivel abrir o arquivo pessoa.");
   } while (ptrAutor != NULL && AuxAutor.id != 0);
   fclose (ptrLivroAutor);
   fclose (ptrLivro);
@@ -1139,7 +1218,7 @@ void tituloMenuEmprestimo() {
   printf("\\________|\\__| \\__| \\__|$$  ____/ \\__|       \\_______|\\_______/    \\____/ \\__|\\__| \\__| \\__| \\______/ \n");
   printf("                        $$ |                                                                          \n");
   printf("                        $$ |                                                                          \n");
-  printf("                        \\__|                                                                          \n\n\n\n\n\n\n\n\n");
+  printf("                        \\__|                                                                          \n\n\n\n\n");
 
   textcolor(15);  
 }
@@ -1155,7 +1234,7 @@ void tituloMenuPessoas() {
     printf("$$  ____/ $$$$$$$$ |\\$$$$$$\\  \\$$$$$$\\  $$ /  $$ | $$$$$$$ |\\$$$$$$\\  \n");
     printf("$$ |      $$   ____| \\____$$\\  \\____$$\\ $$ |  $$ |$$  __$$ | \\____$$\\ \n");
     printf("$$ |      \\$$$$$$$\\ $$$$$$$  |$$$$$$$  |\\$$$$$$  |\\$$$$$$$ |$$$$$$$  |\n");
-    printf("\\__|       \\_______|\\_______/ \\_______/  \\______/  \\_______|\\_______/ \n\n\n\n\n\n\n\n\n\n");
+    printf("\\__|       \\_______|\\_______/ \\_______/  \\______/  \\_______|\\_______/ \n\n\n\n\n\n");
 
     textcolor(15);    
 }
