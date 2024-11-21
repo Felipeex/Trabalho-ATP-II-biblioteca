@@ -292,7 +292,7 @@ void emprestimoMenu() {
 }
 
 void CadastrarEmprestimo() {
-  FILE * PonteiroEmprestimoArquivo = fopen("emprestimo.dat", "ab+");
+  FILE * PonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo.dat", "ab+");
   Emprestimo novoEmprestimo;
   Pessoa emprestimoPessoa;
   Livro emprestimoLivro;
@@ -316,6 +316,7 @@ void CadastrarEmprestimo() {
           if (indicePessoa >= 0) {
             fseek(PonteiroPessoaArquivo, indicePessoa, 0);
             fread(&emprestimoPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+            fclose(PonteiroPessoaArquivo);
 
             printf(CYAN "ID: " NORMAL "%d\n", emprestimoPessoa.id);
             printf(CYAN "Nome: " NORMAL "%s\n", emprestimoPessoa.nome);
@@ -332,21 +333,22 @@ void CadastrarEmprestimo() {
                 indiceLivro = BuscaLivroId(PonteiroLivroArquivo, emprestimoLivro.id);
 
                 if (indiceLivro >= 0) {
-                  indiceEmprestimo = BuscarEmprestimo(PonteiroEmprestimoArquivo, emprestimoPessoa.id, emprestimoLivro.id);
+                  fseek(PonteiroLivroArquivo, indiceLivro, 0);
+                  fread(&emprestimoLivro, sizeof(Livro), 1, PonteiroLivroArquivo);
+                  fclose(PonteiroLivroArquivo);
 
-                  if (indiceEmprestimo < 0) {
-                    fseek(PonteiroLivroArquivo, indiceLivro, 0);
-                    fread(&emprestimoLivro, sizeof(Livro), 1, PonteiroLivroArquivo);
+                  printf(CYAN "ID: " NORMAL "%d\n", emprestimoLivro.id);
+                  printf(CYAN "Nome: " NORMAL "%s\n", emprestimoLivro.titulo);
+                  printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
 
-                    printf(CYAN "ID: " NORMAL "%d\n", emprestimoLivro.id);
-                    printf(CYAN "Nome: " NORMAL "%s\n", emprestimoLivro.titulo);
-                    printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
+                  if (request("Os dados do " CYAN "LIVRO" NORMAL " estão corretos?")) {
+                    indiceEmprestimo = BuscarEmprestimo(PonteiroEmprestimoArquivo, emprestimoPessoa.id, emprestimoLivro.id);
 
-                    if (request("Os dados do " CYAN "LIVRO" NORMAL " estão corretos?")) {
+                    if (indiceEmprestimo < 0) {
                       fwrite(&novoEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
-                    }
-                  } else printf(YELLOW "[AVISO] O %s já emprestou esse o livro de titulo \"%s\".\n" NORMAL, emprestimoPessoa.nome, emprestimoLivro.titulo);
-                } else { printf(YELLOW "[AVISO] O ID do livro: \"%d\" não existe.\n" NORMAL, emprestimoLivro.id); getch(); limparLinhas(3); }
+                    } else {printf(YELLOW "[AVISO] O %s já emprestou esse o livro de titulo \"%s\".\n" NORMAL, emprestimoPessoa.nome, emprestimoLivro.titulo); getch(); limparLinhas(18); }
+                  }
+                } else { printf(YELLOW "[AVISO] O ID do livro: \"%d\" não existe.\n" NORMAL, emprestimoLivro.id); getch(); limparLinhas(12); }
               } else printf("\nNão foi possivel abrir o arquivo livro.");
             } else { limparLinhas(9); }
           } else { printf(YELLOW "[AVISO] O ID da pessoa: \"%d\" não existe.\n" NORMAL, emprestimoPessoa.id); getch(); limparLinhas(3); }
@@ -354,6 +356,7 @@ void CadastrarEmprestimo() {
       }
     }
   } while(PonteiroEmprestimoArquivo != NULL && emprestimoPessoa.id != 0);
+  fclose(PonteiroEmprestimoArquivo);
 }
 
 void EditarEmprestimo() {}
@@ -365,10 +368,10 @@ int BuscarEmprestimo(FILE * PonteiroEmprestimoArquivo, int idPessoa, int idLivro
 
   fseek(PonteiroEmprestimoArquivo, 0, 0);
   fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
-  while(!feof(PonteiroEmprestimoArquivo) && (tempEmprestimo.idPessoa != idPessoa || tempEmprestimo.idLivro != idLivro || tempEmprestimo.excluido != 0))
+  while(!feof(PonteiroEmprestimoArquivo) && (tempEmprestimo.idPessoa != idPessoa && tempEmprestimo.idLivro != idLivro || tempEmprestimo.excluido != 0))
     fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
 
-  if (!feof(PonteiroEmprestimoArquivo)) {
+  if (tempEmprestimo.idPessoa != idPessoa && tempEmprestimo.idLivro != idLivro || tempEmprestimo.excluido != 0) {
     return ftell(PonteiroEmprestimoArquivo) - sizeof(Emprestimo);
   }
 

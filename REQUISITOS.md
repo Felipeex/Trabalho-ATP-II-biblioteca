@@ -18,7 +18,7 @@
 
 ### Emprestimo @Felipe
 
-- [ ] Deve ser possivel cadastrar um emprestimo
+- [x] Deve ser possivel cadastrar um emprestimo
 - [ ] Deve ser possivel editar um emprestimo
 - [ ] Deve ser possivel excluir um emprestimo logicamente
 - [ ] Deve ser possivel excluir um emprestimo fisicamente
