@@ -80,6 +80,8 @@ void tituloMenuAutor();
 void ExibirTodosAutores(void);
 void exclusaoAutoresMenu ();
 void ConsultarAutor(void);
+void BuscaAutorPelaLetra (void);
+void OrdenaAutorNacionalidade (FILE * PtrAutor);
 
 // Emprestimo
 void CadastrarEmprestimo();
@@ -121,6 +123,8 @@ void tituloMenuPrincipal();
 void limparLinhas(int quantidadeDeOpcoes);
 int request(const char message[]);
 void moldura(int width, int height, int color);
+void tituloMenuRelatorio(void);
+void relatorioMenu(void);
 
 
 void ExcluirPessoasFisicamente() {
@@ -159,14 +163,15 @@ int main() {
     "Livro",
     "Empréstimos",
     "Pessoas",
-    "Livro e Autor"
+    "Livro e Autor",
+    "Relatório"
   };
   
   do {
     clrscr();
     tituloMenuPrincipal();
     fflush(stdin);
-    opcaoSelecionada = menu(opcoesPrincipais, 5);
+    opcaoSelecionada = menu(opcoesPrincipais, 6);
 
     switch (opcaoSelecionada) {
       case 0:
@@ -183,6 +188,9 @@ int main() {
         break;
       case 4:
         livroAutorMenu();;
+        break;
+      case 5: 
+        relatorioMenu();
         break;
     }
   } while (opcaoSelecionada != -1);
@@ -633,6 +641,26 @@ void livroAutorMenu() {
       case 5:
         break;
     }
+  } while (opcaoSelecionada != -1);
+}
+
+void relatorioMenu(void) {
+  int opcaoSelecionada;
+  char opcoesRelatorio[10][100] = {
+    "Autores que começam com uma determinada letra ordenado pela nacionalidade"
+  };
+
+  do {
+    clrscr();
+    tituloMenuRelatorio();
+    opcaoSelecionada = menu (opcoesRelatorio, 10);
+
+    switch (opcaoSelecionada) {
+      case 0:
+        BuscaAutorPelaLetra ();
+        break;
+    }
+
   } while (opcaoSelecionada != -1);
 }
 
@@ -1110,36 +1138,68 @@ void ConsultarAutor(void) {
 // Ordenar
 
 //Ordenação por bolha
-void OrdenaAutorNacionalidade (void) {
-  FILE * PtrAutor = fopen ("biblioteca/autor.dat", "rb+");
+void OrdenaAutorNacionalidade (FILE * PtrAutor) {
   int Qtd, i;
   Autor Reg1, Reg2;
 
-  if (PtrAutor != NULL) {
-    fseek(PtrAutor, 0, 2);
-    Qtd = ftell(PtrAutor) / sizeof (Autor);
-    for ( ; Qtd > 1; Qtd--) {
-      i=0; 
-      while (i < Qtd-1) {
-        fseek (PtrAutor, i*sizeof(Autor), 0);
-        fread (&Reg1, sizeof(Autor), 1, PtrAutor);
+  fseek(PtrAutor, 0, 2);
+  Qtd = ftell(PtrAutor) / sizeof (Autor);
+  for ( ; Qtd > 1; Qtd--) {
+    i=0; 
+    while (i < Qtd-1) {
+      fseek (PtrAutor, i*sizeof(Autor), 0);
+      fread (&Reg1, sizeof(Autor), 1, PtrAutor);
 
+      fseek (PtrAutor, (i+1)*sizeof(Autor), 0);
+      fread (&Reg2, sizeof(Autor), 1, PtrAutor);
+      if (strcasecmp(Reg1.nacionalidade, Reg2.nacionalidade) > 0) {
         fseek (PtrAutor, (i+1)*sizeof(Autor), 0);
-        fread (&Reg2, sizeof(Autor), 1, PtrAutor);
-        if (Reg1.nacionalidade[0] > Reg2.nacionalidade[0]) {
-          fseek (PtrAutor, (i+1)*sizeof(Autor), 0);
-          fwrite (&Reg1, sizeof(Autor), 1, PtrAutor);
+        fwrite (&Reg1, sizeof(Autor), 1, PtrAutor);
 
-          fseek (PtrAutor, i*sizeof(Autor), 0);
-          fwrite (&Reg2, sizeof(Autor), 1, PtrAutor);
-        }
-        i++;
+        fseek (PtrAutor, i*sizeof(Autor), 0);
+        fwrite (&Reg2, sizeof(Autor), 1, PtrAutor);
       }
+      i++;
     }
-  } else printf ("Erro na abertura do arquivo\n");
-  fclose (PtrAutor);
+  }
 }
 
+// Relatórios
+
+void BuscaAutorPelaLetra (void) {
+  FILE * PtrAutor = fopen("biblioteca/autor.dat", "rb+");
+  char letra;
+  Autor AutorAux;
+  int cont;
+
+  do {
+    if (PtrAutor != NULL) {
+      cont = 0;
+      OrdenaAutorNacionalidade(PtrAutor);
+      printf ("\nInical do Autor: ");
+      fflush(stdin);
+      letra =  toupper(getche());
+
+      fseek (PtrAutor, 0, 0);
+      fread (&AutorAux, sizeof(Autor), 1, PtrAutor);
+
+      while (!feof(PtrAutor)) {
+        if (toupper(AutorAux.nome[0]) == letra && AutorAux.excluido == 0) {
+
+          printf(CYAN "\nID: " NORMAL "%d\n", AutorAux.id);
+          printf(CYAN "Nome: " NORMAL "%s\n", AutorAux.nome);
+          printf(CYAN "Nacionalidade: " NORMAL "%s\n", AutorAux.nacionalidade);
+          cont++;
+        }
+        fread (&AutorAux, sizeof(Autor), 1, PtrAutor);
+      }
+      if (!cont) 
+        printf (RED "\nUsuário com inicial " NORMAL "[%c]" RED " não encontrado\n" NORMAL, letra); 
+    } else printf("\nNão foi possivel abrir o arquivo pessoa."); 
+  } while (PtrAutor != NULL && letra != 27);
+  fclose (PtrAutor);
+}
+ 
 int menu(char opcoes[][100], int quantidadeDeOpcoes) {
   int opcaoSelecionada = 0;
   int acao;
@@ -1288,6 +1348,17 @@ void tituloMenuLivroAutor() {
     printf("\\________|\\__|    \\_/    \\__|       \\______/        \\_______|      \\__|  \\__| \\______/    \\____/  \\______/ \\__|      \n\n\n\n\n\n\n\n\n");
 
     textcolor(15);    
+}
+
+void tituloMenuRelatorio(void) {
+    printf("$$$$$$$\\            $$\\            $$\\                         $$\\           \n");
+    printf("$$  __$$\\           $$ |           $$ |                        \\__|          \n");
+    printf("$$ |  $$ | $$$$$$\\  $$ | $$$$$$\\ $$$$$$\\    $$$$$$\\   $$$$$$\\  $$\\  $$$$$$\\  \n");
+    printf("$$$$$$$  |$$  __$$\\ $$ | \\____$$\\\\_$$  _|  $$  __$$\\ $$  __$$\\ $$ |$$  __$$\\ \n");
+    printf("$$  __$$< $$$$$$$$ |$$ | $$$$$$$ | $$ |    $$ /  $$ |$$ |  \\__|$$ |$$ /  $$ |\n");
+    printf("$$ |  $$ |$$   ____|$$ |$$  __$$ | $$ |$$\\ $$ |  $$ |$$ |      $$ |$$ |  $$ |\n");
+    printf("$$ |  $$ |\\$$$$$$$\\ $$ |\\$$$$$$$ | \\$$$$  |\\$$$$$$  |$$ |      $$ |\\$$$$$$  |\n");
+    printf("\\__|  \\__| \\_______|\\__| \\_______|  \\____/  \\______/ \\__|      \\__| \\______/ \n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
 int request(const char message[]) {
