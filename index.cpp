@@ -647,17 +647,29 @@ void livroAutorMenu() {
 void relatorioMenu(void) {
   int opcaoSelecionada;
   char opcoesRelatorio[10][100] = {
-    "Autores que começam com uma determinada letra ordenado pela nacionalidade"
+    "Autores que começam com uma determinada letra ordenado pela nacionalidade",
+    "Livros com titulo que contenham uma determinada palavra ordenados pelo ano de publicação",
+    "Empréstimos de uma pessoa específica",
+    "Dados de livros de um autor específico",
+    "Empréstimos com os dados detalhados separados por pessoa"
   };
 
   do {
     clrscr();
     tituloMenuRelatorio();
-    opcaoSelecionada = menu (opcoesRelatorio, 10);
+    opcaoSelecionada = menu (opcoesRelatorio, 5);
 
     switch (opcaoSelecionada) {
       case 0:
         BuscaAutorPelaLetra ();
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 5:
         break;
     }
 
@@ -1351,6 +1363,9 @@ void tituloMenuLivroAutor() {
 }
 
 void tituloMenuRelatorio(void) {
+    clrscr();         
+    textcolor(2); 
+
     printf("$$$$$$$\\            $$\\            $$\\                         $$\\           \n");
     printf("$$  __$$\\           $$ |           $$ |                        \\__|          \n");
     printf("$$ |  $$ | $$$$$$\\  $$ | $$$$$$\\ $$$$$$\\    $$$$$$\\   $$$$$$\\  $$\\  $$$$$$\\  \n");
@@ -1358,7 +1373,9 @@ void tituloMenuRelatorio(void) {
     printf("$$  __$$< $$$$$$$$ |$$ | $$$$$$$ | $$ |    $$ /  $$ |$$ |  \\__|$$ |$$ /  $$ |\n");
     printf("$$ |  $$ |$$   ____|$$ |$$  __$$ | $$ |$$\\ $$ |  $$ |$$ |      $$ |$$ |  $$ |\n");
     printf("$$ |  $$ |\\$$$$$$$\\ $$ |\\$$$$$$$ | \\$$$$  |\\$$$$$$  |$$ |      $$ |\\$$$$$$  |\n");
-    printf("\\__|  \\__| \\_______|\\__| \\_______|  \\____/  \\______/ \\__|      \\__| \\______/ \n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    printf("\\__|  \\__| \\_______|\\__| \\_______|  \\____/  \\______/ \\__|      \\__| \\______/ \n\n\n\n\n\n\n");
+
+    textcolor(15);
 }
 
 int request(const char message[]) {
