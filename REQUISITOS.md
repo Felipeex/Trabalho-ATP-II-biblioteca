@@ -60,8 +60,8 @@
 - [x] A data é definida por uma struct, onde dia, mês e ano são inteiros.
 - [x] Cada tabela deve ter uma chave primária e relacionamentos entre elas
 - [x] As datas deveram ser validadas.
-- [ ] Gerar dados para os arquivos
-- [ ] Livro Autor: Os dois campos juntos (ID Autor, ID Livro), formam a chave primária desta tabela.
+- [x] Gerar dados para os arquivos
+- [x] Livro Autor: Os dois campos juntos (ID Autor, ID Livro), formam a chave primária desta tabela.
 
 # Regras de Negócio
 
