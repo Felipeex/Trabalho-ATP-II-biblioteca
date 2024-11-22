@@ -93,6 +93,7 @@ void emprestimoMenu();
 void tituloMenuEmprestimo();
 int dataDeDevolucaoValida(Data emprestimo, Data devolucao);
 void EmprestimosPorPessoa();
+void BuscaEmprestimoPorPessoa (void);
 
 // Pessoa
 void CadastrarPessoa();
@@ -117,6 +118,7 @@ int BuscaAutorLivro (FILE *ptrAutorLivro, int idLivro, int idAutor);
 void CadastraLivroAutor (void);
 void tituloMenuLivroAutor();
 void livroAutorMenu();
+void ExclusaoLogicaLivroAutor (void);
 
 // Outras
 int menu(char options[][100], int studentsLogicSize);
@@ -885,6 +887,7 @@ void livroAutorMenu() {
       case 3:
         break;
       case 4:
+        ExclusaoLogicaLivroAutor();
         break;
       case 5:
         break;
@@ -1327,17 +1330,21 @@ void ExclusaoLogicaDeLivro (void) {
   int pos;
 
   if (ptr != NULL) {  
+
     printf ("Id do Livro que deseja excluir: ");
     scanf ("%d", &AuxLivro.id);
+
     while (AuxLivro.id != 0) {
       pos = BuscaLivroId (ptr, AuxLivro.id);
       if (pos >= 0) {
+
         fseek (ptr, pos, 0);
         fread (&AuxLivro, sizeof(Livro), 1, ptr);
-        printf ("<<<<<<< Dados do Livro >>>>>>\n");
-        printf ("ID: %d\n", AuxLivro.id);
-        printf ("Titulo: %s\n", AuxLivro.titulo);
-        printf ("Ano de Publicação: %d\n", AuxLivro.anoPublicacao);
+
+        printf (NORMAL "<<<<<<< Dados do Livro >>>>>>\n");
+        printf (CYAN "ID: " NORMAL "%d\n", AuxLivro.id);
+        printf (CYAN "Titulo:" NORMAL "%s\n", AuxLivro.titulo);
+        printf (CYAN "Ano de Publicação:" NORMAL "%d\n", AuxLivro.anoPublicacao);
         printf ("--------------------------------------------\n");
         printf ("Deseja Realizar a Exclusão? (S/N)");
         if (toupper(getch()) == 'S') {
@@ -1350,9 +1357,76 @@ void ExclusaoLogicaDeLivro (void) {
 
       printf ("[0] - SAIR\n");
       printf ("Id do Livro que deseja excluir: ");
-      scanf ("%d", AuxLivro.id);
+      scanf ("%d", &AuxLivro.id);
     }
   } else printf ("Erro na Abertura do Arquivo\n");
+}
+
+void ExclusaoLogicaLivroAutor (void) {
+  FILE * PtrLivroAutor = fopen ("biblioteca/autorlivro.dat", "rb+");
+  FILE * PtrAutor = fopen ("biblioteca/autor.dat", "rb");
+  FILE * PtrLivro = fopen ("biblioteca/livro.dat", "rb");
+  int idAutor, posAutor, idLivro, posLivro, posLivroAutor;
+  Autor AutorAux;
+  Livro LivroAux;
+  LivroAutor LivroAutorAux;
+
+  if (PtrLivroAutor != NULL) {
+    do {
+      printf ("Id do Autor: ");
+      scanf ("%d", &idAutor);
+
+      if (idAutor > 0) {
+        fseek (PtrAutor, 0, 0);
+        posAutor = BuscaAutorId(PtrAutor, idAutor);
+
+        if (posAutor != -1) {
+          printf ("ID do Livro: ");
+          scanf ("%d", &idLivro);
+
+          fseek (PtrLivro, 0, 0);
+          posLivro = BuscaLivroId (PtrLivro, idLivro);
+
+          if (posLivro != -1) {
+
+            fseek (PtrLivroAutor, 0, 0);
+            posLivroAutor = BuscaAutorLivro(PtrLivroAutor, idLivro, idAutor);
+
+            if (posLivroAutor != -1) {
+
+              fseek (PtrAutor, posAutor, 0);
+              fread (&AutorAux, sizeof(Autor), 1, PtrAutor);
+
+              printf (CYAN "\nID do Autor: " NORMAL "%d\n", AutorAux.id);
+              printf (CYAN "Nome do Autor: " NORMAL "%s\n", AutorAux.nome);
+
+              fseek (PtrLivro, posLivro, 0);
+              fread(&LivroAux, sizeof(Livro), 1, PtrLivro);
+
+              printf (CYAN "ID do Livro: " NORMAL "%d\n", LivroAux.id);
+              printf (CYAN "Nome do Livro: " NORMAL "%s\n", LivroAux.titulo);
+
+              if (request("Os dados do " CYAN "LIVRO E AUTOR" NORMAL " estão corretos?")) {
+
+                if (request (RED "Deseja excluir?" NORMAL)) {
+                  
+                  fseek (PtrLivroAutor, posLivroAutor, 0);
+                  fread(&LivroAutorAux, sizeof(LivroAutor), 1, PtrLivroAutor);
+
+                  LivroAutorAux.excluido = 1;
+
+                  fseek(PtrLivroAutor, posLivroAutor, 0);
+                  fwrite (&LivroAutorAux, sizeof(LivroAutor), 1, PtrLivroAutor);
+
+                  printf (GREEN "\nRelacionameto excluído!!\n" NORMAL);
+                } else (RED "\nExclusão cancelada!!\n" NORMAL);
+              } 
+            } else printf (RED "\nRelacionamento não encontrado!!\n" NORMAL);
+          } else printf (RED "\nLivro não cadastrado\n" NORMAL);
+        } else printf (RED "\nAutor não encontrado\n" NORMAL);
+      }
+    } while (idAutor > 0);
+  }
 }
 
 // ----------------------------------------------------------------
@@ -1524,49 +1598,6 @@ void BuscaAutorPelaLetra (void) {
   fclose (PtrAutor);
 }
 
-void BuscaEmprestimoPorPessoa (void) {
-  FILE * PtrEmprestimo = fopen ("biblioteca/emprestimo.dat", "rb");
-  FILE * PtrPessoa = fopen ("biblioteca/pessoa.dat", "rb");
-  Pessoa AuxPessoa;
-  Emprestimo AuxEmprestimo;
-  int posPessoa, idPessoa, cont;
-
-  if (PtrPessoa != NULL) {
-    do {
-      printf ("\nID da Pessoa: ");
-      scanf ("%d", &idPessoa);
-      if (idPessoa > 0) {
-
-        cont = 0;
-        fseek(PtrPessoa, 0, 0);
-        posPessoa = BuscarPessoaPeloID(PtrPessoa, idPessoa);
-
-        if (posPessoa >= 0) {
-          
-          fseek (PtrEmprestimo, 0, 0);
-          fread (&AuxEmprestimo, sizeof(Emprestimo), 1, PtrEmprestimo);
-          while (!feof(PtrEmprestimo)) {
-            if (idPessoa == AuxEmprestimo.idPessoa && AuxEmprestimo.excluido != 1) {
-
-              printf(CYAN "\nID Emprestimo: " NORMAL "%d\n", AuxEmprestimo.id);
-              printf(CYAN "Data do Empréstimo: " NORMAL "%d/%d/%d\n", AuxEmprestimo.dataEmprestimo.dia, AuxEmprestimo.dataEmprestimo.mes, AuxEmprestimo.dataEmprestimo.ano);
-              printf(CYAN "Data de Devolução: " NORMAL "%d/%d/%d\n", AuxEmprestimo.dataDevolucao.dia,AuxEmprestimo.dataDevolucao.mes,AuxEmprestimo.dataDevolucao.ano);
-              printf (CYAN"ID do Livro: " NORMAL "%d\n", AuxEmprestimo.idLivro);
-              printf (CYAN "Dias Restantes: " NORMAL "%d/%d/%d", AuxEmprestimo.dataDevolucao.dia-AuxEmprestimo.       dataEmprestimo.dia, AuxEmprestimo.dataDevolucao.mes-AuxEmprestimo.dataEmprestimo.mes, AuxEmprestimo.dataDevolucao.ano-AuxEmprestimo.dataEmprestimo.ano);
-              cont++;
-            }
-            fread (&AuxEmprestimo, sizeof(Emprestimo), 1, PtrEmprestimo);
-          }
-          if (!cont) 
-            printf (RED "\nEmpréstimo com id Pessoa " NORMAL "[%d]" RED " não encontrado\n" NORMAL, idPessoa);
-        } else printf (RED "\nPessoa não cadastrada!!\n" NORMAL);
-      } 
-
-    } while (AuxPessoa.id > 0);
-    fclose (PtrEmprestimo);
-    fclose(PtrPessoa);
-  } else (RED "Erro na abertura do arquivi\n" NORMAL);
-}
  
 int menu(char opcoes[][100], int quantidadeDeOpcoes) {
   int opcaoSelecionada = 0;
