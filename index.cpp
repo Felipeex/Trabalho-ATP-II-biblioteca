@@ -92,6 +92,7 @@ int BuscarEmprestimo(FILE * PonteiroEmprestimoArquivo, int idPessoa, int idLivro
 void emprestimoMenu();
 void tituloMenuEmprestimo();
 int dataDeDevolucaoValida(Data emprestimo, Data devolucao);
+void EmprestimosPorPessoa();
 
 // Pessoa
 void CadastrarPessoa();
@@ -134,13 +135,16 @@ void ExcluirPessoasFisicamente() {
   if (PonteiroPessoaArquivo != NULL) {
     FILE * TempPonteiroPessoaArquivo = fopen("biblioteca/pessoa-temp.dat", "wb");
 
-    do {
-      fread(&tempPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+    fread(&tempPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+    while(!feof(PonteiroPessoaArquivo)) {
+      printf("%d %d\n", tempPessoa.id, tempPessoa.excluido);
 
       if (!tempPessoa.excluido) {
         fwrite(&tempPessoa, sizeof(Pessoa), 1, TempPonteiroPessoaArquivo); 
       }
-    } while(!feof(PonteiroPessoaArquivo));
+
+      fread(&tempPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+    }
 
     fclose(PonteiroPessoaArquivo);
     fclose(TempPonteiroPessoaArquivo);
@@ -157,13 +161,16 @@ void ExcluirEmprestimosFisicamente() {
   if (PonteiroEmprestimoArquivo != NULL) {
     FILE * TempPonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo-temp.dat", "wb");
 
-    do {
-      fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+    fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+    while(!feof(PonteiroEmprestimoArquivo)) {
+      printf("%d %d\n", tempEmprestimo.id, tempEmprestimo.excluido);
 
       if (!tempEmprestimo.excluido) {
         fwrite(&tempEmprestimo, sizeof(Emprestimo), 1, TempPonteiroEmprestimoArquivo); 
       }
-    } while(!feof(PonteiroEmprestimoArquivo));
+
+      fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+    }
 
     fclose(PonteiroEmprestimoArquivo);
     fclose(TempPonteiroEmprestimoArquivo);
@@ -178,9 +185,9 @@ int main() {
     SetConsoleOutputCP(CP_UTF8);
   #endif
 
-
   ExcluirPessoasFisicamente();
   ExcluirEmprestimosFisicamente();
+
   int opcaoSelecionada;
   char opcoesPrincipais[10][100] = {
     "Autor",
@@ -512,7 +519,7 @@ void ConsultarEmprestimo() {
             printf(CYAN "Endereço: " NORMAL "%s\n", emprestimoPessoa.endereco);
 
             if (request("Os dados da " CYAN "PESSOA" NORMAL " estão corretos?")) {
-              printf(NORMAL "\nForneça o ID do " CYAN "LIVRO" NORMAL " para editar o emprestimo: ");
+              printf(NORMAL "\nForneça o ID do " CYAN "LIVRO" NORMAL " para consultar o emprestimo: ");
               scanf("%d", &emprestimoLivro.id);
 
               FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb+");
@@ -583,7 +590,7 @@ void ExcluirEmprestimo() {
             printf(CYAN "Endereço: " NORMAL "%s\n", emprestimoPessoa.endereco);
 
             if (request("Os dados da " CYAN "PESSOA" NORMAL " estão corretos?")) {
-              printf(NORMAL "\nForneça o ID do " CYAN "LIVRO" NORMAL " para editar o emprestimo: ");
+              printf(NORMAL "\nForneça o ID do " CYAN "LIVRO" NORMAL " para excluir o emprestimo: ");
               scanf("%d", &emprestimoLivro.id);
 
               FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb+");
@@ -911,6 +918,7 @@ void relatorioMenu(void) {
       case 1:
         break;
       case 2:
+        EmprestimosPorPessoa();
         break;
       case 3:
         break;
@@ -919,6 +927,72 @@ void relatorioMenu(void) {
     }
 
   } while (opcaoSelecionada != -1);
+}
+
+void EmprestimosPorPessoa() {
+  FILE * PonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo.dat", "rb+");
+  Emprestimo emprestimo;
+  Pessoa emprestimoPessoa;
+  Livro emprestimoLivro;
+  int indicePessoa, indiceLivro;
+  
+  do {
+    if (PonteiroEmprestimoArquivo != NULL) {
+      printf(NORMAL "\nForneça o ID da " CYAN "PESSOA" NORMAL " para listar os emprestimos: ");
+      scanf("%d", &emprestimoPessoa.id);
+
+      if (emprestimoPessoa.id != 0) {
+        FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb+");
+
+        if (PonteiroPessoaArquivo != NULL) {
+          indicePessoa = BuscarPessoaPeloID(PonteiroPessoaArquivo, emprestimoPessoa.id);
+
+          if (indicePessoa >= 0) {
+            fseek(PonteiroPessoaArquivo, indicePessoa, 0);
+            fread(&emprestimoPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+
+            printf(CYAN "ID: " NORMAL "%d\n", emprestimoPessoa.id);
+            printf(CYAN "Nome: " NORMAL "%s\n", emprestimoPessoa.nome);
+            printf(CYAN "Telefone: " NORMAL "%s\n", emprestimoPessoa.telefone);
+            printf(CYAN "Endereço: " NORMAL "%s\n", emprestimoPessoa.endereco);
+
+            fseek(PonteiroEmprestimoArquivo, 0, 0);
+            fread(&emprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+            printf("%d %d\n", emprestimo.idPessoa, emprestimoPessoa.id);
+
+            while(!feof(PonteiroEmprestimoArquivo)) { 
+              printf("%d %d\n", emprestimo.idPessoa, emprestimoPessoa.id);
+              if (emprestimo.idPessoa == emprestimoPessoa.id) {
+                FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb+");
+
+                if (PonteiroLivroArquivo != NULL) {
+                  indiceLivro = BuscaLivroId(PonteiroLivroArquivo, emprestimo.idLivro);
+
+                  if (indiceLivro >= 0) {
+                    fseek(PonteiroLivroArquivo, indiceLivro, 0);
+                    fread(&emprestimoLivro, sizeof(Livro), 1, PonteiroLivroArquivo);
+                    fclose(PonteiroLivroArquivo);
+
+                    printf(CYAN "ID: " NORMAL "%d\n", emprestimoLivro.id);
+                    printf(CYAN "Nome: " NORMAL "%s\n", emprestimoLivro.titulo);
+                    printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
+
+                    printf(CYAN "\nData de empretimo: " NORMAL "%d/%d/%d\n", emprestimo.dataEmprestimo.dia, emprestimo.dataEmprestimo.mes, emprestimo.dataEmprestimo.ano);
+                    printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimo.dataEmprestimo.dia, emprestimo.dataEmprestimo.mes, emprestimo.dataEmprestimo.ano);
+                  }
+                } else printf("\nNão foi possivel abrir o arquivo emprestimo."); 
+              }
+
+              fread(&emprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+            }
+          } else { printf(YELLOW "[AVISO] O ID da pessoa: \"%d\" não existe.\n" NORMAL, emprestimoPessoa.id); getch(); limparLinhas(3); }
+        } else printf("\nNão foi possivel abrir o arquivo pessoa."); 
+
+        fclose(PonteiroPessoaArquivo);
+      }
+    }
+  } while(PonteiroEmprestimoArquivo != NULL && emprestimoPessoa.id != 0);
+  fclose(PonteiroEmprestimoArquivo);
 }
 
 void exclusaoAutoresMenu () {
