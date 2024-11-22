@@ -957,7 +957,7 @@ void EmprestimosPorPessoa() {
             fseek(PonteiroPessoaArquivo, indicePessoa, 0);
             fread(&emprestimoPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
 
-            printf(CYAN "ID: " NORMAL "%d\n", emprestimoPessoa.id);
+            printf(CYAN "\nID: " NORMAL "%d\t", emprestimoPessoa.id);
             printf(CYAN "Nome: " NORMAL "%s\n", emprestimoPessoa.nome);
             printf(CYAN "Telefone: " NORMAL "%s\n", emprestimoPessoa.telefone);
             printf(CYAN "Endereço: " NORMAL "%s\n", emprestimoPessoa.endereco);
@@ -976,11 +976,10 @@ void EmprestimosPorPessoa() {
                     fread(&emprestimoLivro, sizeof(Livro), 1, PonteiroLivroArquivo);
                     fclose(PonteiroLivroArquivo);
 
-                    printf(CYAN "ID: " NORMAL "%d\n", emprestimoLivro.id);
+                    printf(CYAN "\nEmprestimo de ID: " NORMAL "%d\n", emprestimoLivro.id);
                     printf(CYAN "Nome: " NORMAL "%s\n", emprestimoLivro.titulo);
                     printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
-
-                    printf(CYAN "\nData de empretimo: " NORMAL "%d/%d/%d\n", emprestimo.dataEmprestimo.dia, emprestimo.dataEmprestimo.mes, emprestimo.dataEmprestimo.ano);
+                    printf(CYAN "Data de empretimo: " NORMAL "%d/%d/%d\n", emprestimo.dataEmprestimo.dia, emprestimo.dataEmprestimo.mes, emprestimo.dataEmprestimo.ano);
                     printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimo.dataDevolucao.dia, emprestimo.dataDevolucao.mes, emprestimo.dataDevolucao.ano);
                   }
                 } else printf("\nNão foi possivel abrir o arquivo emprestimo."); 
