@@ -120,6 +120,7 @@ void tituloMenuLivroAutor();
 void livroAutorMenu();
 void ExclusaoLogicaLivroAutor (void);
 void ExclusaoFisicaTodosDeLivroAutor (void);
+void ConsultarLivroAutor (void);
 
 // Outras
 int menu(char options[][100], int studentsLogicSize);
@@ -885,6 +886,7 @@ void livroAutorMenu() {
       case 1:
         break;
       case 2:
+        ConsultarLivroAutor();
         break;
       case 3:
         break;
@@ -1508,7 +1510,7 @@ void ExclusaoFisicaTodosDeLivroAutor (void) {
 
 void ConsultarAutor(void) {
   FILE * ptrAutor = fopen("biblioteca/autor.dat", "rb");
-  FILE * ptrLivroAutor = fopen ("biblioteca/livroautor.dat", "rb");
+  FILE * ptrLivroAutor = fopen ("biblioteca/autorlivro.dat", "rb");
   FILE * ptrLivro = fopen ("biblioteca/livro.dat", "rb");
 
   Autor AuxAutor;
@@ -1558,6 +1560,54 @@ void ConsultarAutor(void) {
   fclose (ptrLivroAutor);
   fclose (ptrLivro);
   fclose(ptrAutor);
+}
+
+void ConsultarLivroAutor (void) {
+  FILE * ptrAutor = fopen("biblioteca/autor.dat", "rb");
+  FILE * ptrLivroAutor = fopen ("biblioteca/autorlivro.dat", "rb");
+  FILE * ptrLivro = fopen ("biblioteca/livro.dat", "rb");
+
+  int idAutor, posAutor, idLivro, posLivro, posLivroAutor;
+  Autor AutorAux;
+  Livro LivroAux;
+  LivroAutor LivroAutorAux;
+
+  if (ptrLivroAutor != NULL) {
+    do {
+      printf (CYAN "\nID do Autor: " NORMAL);
+      scanf ("%d", &idAutor);
+      if (idAutor > 0) {
+      
+        fseek (ptrAutor, 0, 0);
+        posAutor = BuscaAutorId (ptrAutor, idAutor);
+        if (posAutor >= 0) {
+          fseek(ptrAutor, posAutor, 0);
+          fread(&AutorAux, sizeof(Autor), 1, ptrAutor);
+          
+          printf (CYAN "\nID do Autor: " NORMAL "%d\n", AutorAux.id);
+          printf (CYAN "Nome do Autor: " NORMAL "%s\n", AutorAux.nome);
+          printf (CYAN "Nacionalidade: " NORMAL "%s\n", AutorAux.nacionalidade);
+          printf (NORMAL "\n---------------------------------------\n");
+
+          fseek (ptrLivroAutor, 0, 0);
+          fread (&LivroAutorAux, sizeof(LivroAutor), 1, ptrLivroAutor);
+          while (!feof(ptrLivroAutor)) {
+            if (LivroAutorAux.idAutor == idAutor) {
+              fseek (ptrLivro, 0, 0);
+              posLivro = BuscaLivroId(ptrLivro, LivroAutorAux.idLivro);
+              fseek (ptrLivro, posLivro, 0);
+              fread(&LivroAux, sizeof(Livro), 1, ptrLivro);
+
+              printf (CYAN "\nID do Livro: " NORMAL "%d\n", LivroAux.id);
+              printf (CYAN "Titulo: " NORMAL "%s\n", LivroAux.titulo);
+              printf (CYAN "Ano de Publicação: " NORMAL "%d\n", LivroAux.anoPublicacao);             
+            }
+            fread (&LivroAutorAux, sizeof(LivroAutor), 1, ptrLivroAutor);
+          }
+        } else (RED "\nAutor não cadastrado\n" NORMAL);
+      }
+    } while (idAutor > 0);
+  }
 }
 //---------------------------------------------------------------------------------------
 // Ordenar
