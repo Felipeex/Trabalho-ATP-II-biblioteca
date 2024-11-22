@@ -14,7 +14,7 @@
 - [x] Deve ser possivel editar um autor
 - [x] Deve ser possivel excluir um autor logicamente
 - [x] Deve ser possivel excluir um autor fisicamente
-- [ ] Deve ser possivel consultar todos os dados dos autores
+- [x] Deve ser possivel consultar todos os dados dos autores
 
 ### Emprestimo @Felipe
 
@@ -25,7 +25,7 @@
 - [x] Deve ser possivel excluir um emprestimo fisicamente
 - [x] Deve ser possivel associar um livro a uma pessoa por emprestimo
 - [x] Deve ser possivel uma pessoa emprestar varios livros
-- [ ] Deve ser possivel consultar todos os dados dos emprestimos
+- [x] Deve ser possivel consultar todos os dados dos emprestimos
 
 ### Pessoa - @Felipe
 
@@ -34,7 +34,7 @@
 - [x] Deve ser possivel consultar uma pessoa
 - [x] Deve ser possivel excluir uma pessoa logicamente
 - [x] Deve ser possivel excluir uma pessoa fisicamente
-- [ ] Deve ser possivel consultar todos os dados das pessoas
+- [x] Deve ser possivel consultar todos os dados das pessoas
 
 ### Relacionamento Livro Autor @Lucas
 

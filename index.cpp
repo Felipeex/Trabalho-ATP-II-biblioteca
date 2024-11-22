@@ -88,6 +88,7 @@ void CadastrarEmprestimo();
 void EditarEmprestimo();
 void ConsultarEmprestimo();
 void ExcluirEmprestimo();
+void TodosEmprestimos();
 int BuscarEmprestimo(FILE * PonteiroEmprestimoArquivo, int idPessoa, int idLivro);
 void emprestimoMenu();
 void tituloMenuEmprestimo();
@@ -100,6 +101,7 @@ void CadastrarPessoa();
 void EditarPessoa();
 void ConsultarPessoa(); 
 void ExcluirPessoa(); 
+void TodasPessoas();
 int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id);
 void pessoasMenu();
 void tituloMenuPessoas();
@@ -308,12 +310,13 @@ void emprestimoMenu() {
     "Alterar Emprestimo",
     "Consultar Emprestimo",
     "Excluir Emprestimo",
+    "Todos Emprestimos"
   };
 
   do {
     clrscr();
     tituloMenuEmprestimo();
-    opcaoSelecionada = menu(opcoesEmprestimo, 4);
+    opcaoSelecionada = menu(opcoesEmprestimo, 5);
 
     switch (opcaoSelecionada) {
       case 0:
@@ -327,6 +330,9 @@ void emprestimoMenu() {
         break;
       case 3:
         ExcluirEmprestimo();
+        break;
+      case 4:
+        TodosEmprestimos();
         break;
     }
   } while (opcaoSelecionada != -1);
@@ -636,6 +642,57 @@ void ExcluirEmprestimo() {
   fclose(PonteiroEmprestimoArquivo);
 }
 
+void TodosEmprestimos() {
+  FILE * PonteiroEmprestimoArquivo = fopen("biblioteca/emprestimo.dat", "rb");
+  Emprestimo emprestimo;
+  Pessoa emprestimoPessoa;
+  Livro emprestimoLivro;
+  int indicePessoa, indiceLivro;
+
+  if (PonteiroEmprestimoArquivo != NULL) {
+    fread(&emprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+    while(!feof(PonteiroEmprestimoArquivo)) {
+      FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb");
+
+      if (PonteiroPessoaArquivo != NULL) {
+        indicePessoa = BuscarPessoaPeloID(PonteiroPessoaArquivo, emprestimo.idPessoa);
+
+        if (indicePessoa >= 0) {
+          fseek(PonteiroPessoaArquivo, indicePessoa, 0);
+          fread(&emprestimoPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+
+          printf(CYAN "\nEmprestimo de ID: " NORMAL "%d\n", emprestimoLivro.id);
+          printf(CYAN "\nID: " NORMAL "%d\t", emprestimoPessoa.id);
+          printf(CYAN "Nome: " NORMAL "%s\n", emprestimoPessoa.nome);
+          printf(CYAN "Telefone: " NORMAL "%s\n", emprestimoPessoa.telefone);
+          printf(CYAN "Endereço: " NORMAL "%s\n", emprestimoPessoa.endereco);
+
+          FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb");
+
+          if (PonteiroLivroArquivo != NULL) {
+            indiceLivro = BuscaLivroId(PonteiroLivroArquivo, emprestimo.idLivro);
+
+            if (indiceLivro >= 0) {
+              fseek(PonteiroLivroArquivo, indiceLivro, 0);
+              fread(&emprestimoLivro, sizeof(Livro), 1, PonteiroLivroArquivo);
+              fclose(PonteiroLivroArquivo);
+
+              printf(CYAN "Nome: " NORMAL "%s\n", emprestimoLivro.titulo);
+              printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
+              printf(CYAN "Data de empretimo: " NORMAL "%d/%d/%d\n", emprestimo.dataEmprestimo.dia, emprestimo.dataEmprestimo.mes, emprestimo.dataEmprestimo.ano);
+              printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimo.dataDevolucao.dia, emprestimo.dataDevolucao.mes, emprestimo.dataDevolucao.ano);
+            }
+          }
+        }
+      }
+
+      fread(&emprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
+    }
+  } else printf("\nNão foi possivel abrir o arquivo emprestimo."); 
+  fclose(PonteiroEmprestimoArquivo);
+  getch();
+}
+
 int BuscarEmprestimo(FILE * PonteiroEmprestimoArquivo, int idPessoa, int idLivro) {
   Emprestimo tempEmprestimo;
 
@@ -675,13 +732,14 @@ void pessoasMenu() {
     "Cadastrar Pessoa",
     "Alterar Pessoa",
     "Consultar Pessoa",
-    "Excluir Pessoa"
+    "Excluir Pessoa",
+    "Todas Pessoas",
   };
 
   do {
     clrscr();
     tituloMenuPessoas();
-    opcaoSelecionada = menu(opcoesPessoas, 4);
+    opcaoSelecionada = menu(opcoesPessoas, 5);
 
     switch (opcaoSelecionada){
       case 0:
@@ -695,6 +753,9 @@ void pessoasMenu() {
         break;
       case 3:
         ExcluirPessoa();
+        break;
+      case 4:
+        TodasPessoas();
         break;
     }
   } while (opcaoSelecionada != -1);
@@ -847,6 +908,25 @@ void ExcluirPessoa() {
   fclose (PonteiroPessoaArquivo);
 }
 
+void TodasPessoas() {
+  FILE * PonteiroPessoaArquivo = fopen("biblioteca/pessoa.dat", "rb");
+  Pessoa pessoa;
+  if (PonteiroPessoaArquivo != NULL) {
+    fread(&pessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+    while(!feof(PonteiroPessoaArquivo)) {
+      printf(CYAN "\nID: " NORMAL "%d\t", pessoa.id);
+      printf(CYAN "Nome: " NORMAL "%s\n", pessoa.nome);
+      printf(CYAN "Telefone: " NORMAL "%s\n", pessoa.telefone);
+      printf(CYAN "Endereço: " NORMAL "%s\n", pessoa.endereco);
+
+      fread(&pessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
+    }
+  } else printf("\nNão foi possivel abrir o arquivo pessoa.");
+
+  fclose(PonteiroPessoaArquivo);
+  getch();
+}
+
 int BuscarPessoaPeloID(FILE * PonteiroPessoaArquivo, int id) {
   Pessoa tempPessoa;
 
@@ -964,7 +1044,7 @@ void EmprestimosPorPessoa() {
 
             fseek(PonteiroEmprestimoArquivo, 0, 0);
             fread(&emprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
-            while(!feof(PonteiroEmprestimoArquivo)) { 
+            while(!feof(PonteiroEmprestimoArquivo)) {
               if (emprestimo.idPessoa == emprestimoPessoa.id) {
                 FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb+");
 
@@ -1803,7 +1883,7 @@ void tituloMenuPessoas() {
     printf("$$  ____/ $$$$$$$$ |\\$$$$$$\\  \\$$$$$$\\  $$ /  $$ | $$$$$$$ |\\$$$$$$\\  \n");
     printf("$$ |      $$   ____| \\____$$\\  \\____$$\\ $$ |  $$ |$$  __$$ | \\____$$\\ \n");
     printf("$$ |      \\$$$$$$$\\ $$$$$$$  |$$$$$$$  |\\$$$$$$  |\\$$$$$$$ |$$$$$$$  |\n");
-    printf("\\__|       \\_______|\\_______/ \\_______/  \\______/  \\_______|\\_______/ \n\n\n\n\n\n");
+    printf("\\__|       \\_______|\\_______/ \\_______/  \\______/  \\_______|\\_______/ \n\n\n\n\n\n\n");
 
     textcolor(15);    
 }
@@ -1855,54 +1935,4 @@ int request(const char message[]) {
   }
 
    return 0;
-}
-
-void moldura(int width, int height, int color) {
-  int index;
-  int x = wherex();
-  int y = wherey();
-
-  textcolor(color);
-
-  // arc left top
-  gotoxy(x, y);
-  printf("%s", ARC_DOWN_RIGHT);
-
-  // arc right top
-  gotoxy(width, y);
-  printf("%s", ARC_DOWN_LEFT);
-
-  // arc right bottom
-  gotoxy(width, height + y);
-  printf("%s", ARC_UP_LEFT);
-
-  // arc left bottom
-  gotoxy(x, height + y);
-  printf("%s", ARC_UP_RIGHT);
-
-  // top line
-  for (index = x + 1; index < width + x - 1; index++) {
-    gotoxy(index, y);
-    printf("%s", HORIZONTAL_LINE);
-  }
-
-  // bottom line
-  for (index = x + 1; index < width + x - 1; index++) {
-    gotoxy(index, y + height);
-    printf("%s", HORIZONTAL_LINE);
-  }
-
-  // left line
-  for (index = y + 1; index < height + y; index++) {
-    gotoxy(x, index);
-    printf("%s", VERTICAL_LINE);
-  }
-
-  // right line
-  for (index = y + 1; index < height + y; index++) {
-    gotoxy(width, index);
-    printf("%s", VERTICAL_LINE);
-  }
-  
-  textcolor(15);
 }
