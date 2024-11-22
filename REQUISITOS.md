@@ -52,7 +52,7 @@
 - [ ] Deve ser possivel buscar os livros com titulo que contenham uma determinada palavra ordenados pelo ano de publicação @Felipe
 - [x] Deve ser possivel buscar todos os empréstimos de uma pessoa específica - @Felipe
 - [ ] Deve ser possivel buscar todos os dados de livros de um autor específico - @Lucas
-- [ ] Deve ser possivel buscar todos os empréstimos com os dados detalhados separados por pessoa - @Felipe
+- [x] Deve ser possivel buscar todos os empréstimos com os dados detalhados separados por pessoa - @Felipe
 
 # Requisitos Não Funcionais
 
