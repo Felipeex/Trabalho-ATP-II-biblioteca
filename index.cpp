@@ -461,7 +461,7 @@ void EditarEmprestimo() {
                       fread(&emprestimoEditar, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
 
                       printf(CYAN "\nData de empretimo: " NORMAL "%d/%d/%d\n", emprestimoEditar.dataEmprestimo.dia, emprestimoEditar.dataEmprestimo.mes, emprestimoEditar.dataEmprestimo.ano);
-                      printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimoEditar.dataEmprestimo.dia, emprestimoEditar.dataEmprestimo.mes, emprestimoEditar.dataEmprestimo.ano);
+                      printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimoEditar.dataDevolucao.dia, emprestimoEditar.dataDevolucao.mes, emprestimoEditar.dataDevolucao.ano);
 
                       if (request("Você deseja editar esses dados?")) {
                         printf(NORMAL "\nForneça a nova data de emprestimo (EX: 00 00 0000): ");
@@ -540,7 +540,7 @@ void ConsultarEmprestimo() {
                       fread(&emprestimoConsultar, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
 
                       printf(CYAN "\nData de empretimo: " NORMAL "%d/%d/%d\n", emprestimoConsultar.dataEmprestimo.dia, emprestimoConsultar.dataEmprestimo.mes, emprestimoConsultar.dataEmprestimo.ano);
-                      printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimoConsultar.dataEmprestimo.dia, emprestimoConsultar.dataEmprestimo.mes, emprestimoConsultar.dataEmprestimo.ano);
+                      printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimoConsultar.dataDevolucao.dia, emprestimoConsultar.dataDevolucao.mes, emprestimoConsultar.dataDevolucao.ano);
 
                       getch();
                       limparLinhas(20);
@@ -611,7 +611,7 @@ void ExcluirEmprestimo() {
                       fread(&emprestimoExcluir, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
 
                       printf(CYAN "\nData de empretimo: " NORMAL "%d/%d/%d\n", emprestimoExcluir.dataEmprestimo.dia, emprestimoExcluir.dataEmprestimo.mes, emprestimoExcluir.dataEmprestimo.ano);
-                      printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimoExcluir.dataEmprestimo.dia, emprestimoExcluir.dataEmprestimo.mes, emprestimoExcluir.dataEmprestimo.ano);
+                      printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimoExcluir.dataDevolucao.dia, emprestimoExcluir.dataDevolucao.mes, emprestimoExcluir.dataDevolucao.ano);
 
                       if (request("Você deseja excluir esse emprestimo")) {
                         emprestimoExcluir.excluido = 1;
@@ -971,7 +971,7 @@ void EmprestimosPorPessoa() {
                     printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
 
                     printf(CYAN "\nData de empretimo: " NORMAL "%d/%d/%d\n", emprestimo.dataEmprestimo.dia, emprestimo.dataEmprestimo.mes, emprestimo.dataEmprestimo.ano);
-                    printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimo.dataEmprestimo.dia, emprestimo.dataEmprestimo.mes, emprestimo.dataEmprestimo.ano);
+                    printf(CYAN "Data de devolução: " NORMAL "%d/%d/%d\n", emprestimo.dataDevolucao.dia, emprestimo.dataDevolucao.mes, emprestimo.dataDevolucao.ano);
                   }
                 } else printf("\nNão foi possivel abrir o arquivo emprestimo."); 
               }
