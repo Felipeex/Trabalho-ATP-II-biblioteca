@@ -47,7 +47,7 @@
 
 ### Relatório
 
-- [ ] Deve ser possivel exibir os dados de cada Tabela, mostrando os dados completos - @Felipe
+- [x] Deve ser possivel exibir os dados de cada Tabela, mostrando os dados completos - @Felipe
 - [x] Deve ser possivel buscar os autores que começam com uma determinada letra ordenado pela nacionalidade - @Lucas
 - [ ] Deve ser possivel buscar os livros com titulo que contenham uma determinada palavra ordenados pelo ano de publicação @Felipe
 - [x] Deve ser possivel buscar todos os empréstimos de uma pessoa específica - @Felipe
