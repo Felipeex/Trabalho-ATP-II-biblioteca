@@ -137,8 +137,6 @@ void ExcluirPessoasFisicamente() {
 
     fread(&tempPessoa, sizeof(Pessoa), 1, PonteiroPessoaArquivo);
     while(!feof(PonteiroPessoaArquivo)) {
-      printf("%d %d\n", tempPessoa.id, tempPessoa.excluido);
-
       if (!tempPessoa.excluido) {
         fwrite(&tempPessoa, sizeof(Pessoa), 1, TempPonteiroPessoaArquivo); 
       }
@@ -163,8 +161,6 @@ void ExcluirEmprestimosFisicamente() {
 
     fread(&tempEmprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
     while(!feof(PonteiroEmprestimoArquivo)) {
-      printf("%d %d\n", tempEmprestimo.id, tempEmprestimo.excluido);
-
       if (!tempEmprestimo.excluido) {
         fwrite(&tempEmprestimo, sizeof(Emprestimo), 1, TempPonteiroEmprestimoArquivo); 
       }
@@ -958,10 +954,7 @@ void EmprestimosPorPessoa() {
 
             fseek(PonteiroEmprestimoArquivo, 0, 0);
             fread(&emprestimo, sizeof(Emprestimo), 1, PonteiroEmprestimoArquivo);
-            printf("%d %d\n", emprestimo.idPessoa, emprestimoPessoa.id);
-
             while(!feof(PonteiroEmprestimoArquivo)) { 
-              printf("%d %d\n", emprestimo.idPessoa, emprestimoPessoa.id);
               if (emprestimo.idPessoa == emprestimoPessoa.id) {
                 FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb+");
 
