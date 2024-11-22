@@ -111,6 +111,7 @@ void tituloMenuPessoas();
 void CadastrarLivro (void);
 void AlterarLivro (void);
 int BuscaLivroId (FILE *ptr, int Id);
+void TodosLivroPorPalavra();
 void ExclusaoFisicaTodosDeLivro (void);
 void ExclusaoLogicaDeLivro (void);
 void livroMenu();
@@ -386,7 +387,7 @@ void CadastrarEmprestimo() {
                   fclose(PonteiroLivroArquivo);
 
                   printf(CYAN "ID: " NORMAL "%d\n", emprestimoLivro.id);
-                  printf(CYAN "Nome: " NORMAL "%s\n", emprestimoLivro.titulo);
+                  printf(CYAN "Titulo: " NORMAL "%s\n", emprestimoLivro.titulo);
                   printf(CYAN "Ano de publicação: " NORMAL "%d\n", emprestimoLivro.anoPublicacao);
 
                   if (request("Os dados do " CYAN "LIVRO" NORMAL " estão corretos?")) {
@@ -1003,6 +1004,7 @@ void relatorioMenu(void) {
         BuscaAutorPelaLetra ();
         break;
       case 1:
+        TodosLivroPorPalavra();
         break;
       case 2:
         EmprestimosPorPessoa();
@@ -1077,6 +1079,61 @@ void EmprestimosPorPessoa() {
     }
   } while(PonteiroEmprestimoArquivo != NULL && emprestimoPessoa.id != 0);
   fclose(PonteiroEmprestimoArquivo);
+}
+
+void OrdernadarLivroPorAnoDePublicacao(FILE * PonteiroLivroArquivo) {
+  int Qtd, i;
+  Livro livroA, livroB;
+
+  fseek(PonteiroLivroArquivo, 0, 2);
+  Qtd = ftell(PonteiroLivroArquivo) / sizeof (Livro);
+  for (; Qtd > 1; Qtd--) {
+    i=0; 
+    while (i < Qtd-1) {
+      fseek (PonteiroLivroArquivo, i*sizeof(Livro), 0);
+      fread (&livroA, sizeof(Livro), 1, PonteiroLivroArquivo);
+
+      fseek (PonteiroLivroArquivo, (i+1)*sizeof(Livro), 0);
+      fread (&livroB, sizeof(Livro), 1, PonteiroLivroArquivo);
+      if (livroA.anoPublicacao > livroB.anoPublicacao) {
+        fseek (PonteiroLivroArquivo, (i+1)*sizeof(Livro), 0);
+        fwrite (&livroA, sizeof(Livro), 1, PonteiroLivroArquivo);
+
+        fseek (PonteiroLivroArquivo, i*sizeof(Livro), 0);
+        fwrite (&livroB, sizeof(Livro), 1, PonteiroLivroArquivo);
+      }
+      i++;
+    }
+  }
+}
+
+void TodosLivroPorPalavra() {
+  FILE * PonteiroLivroArquivo = fopen("biblioteca/livro.dat", "rb+");
+  Livro livro;
+  char palavra[100];
+
+  OrdernadarLivroPorAnoDePublicacao(PonteiroLivroArquivo);
+
+  do {
+    if (PonteiroLivroArquivo != NULL) {
+      fflush(stdin);
+      printf("Foneça uma palavra para buscar livros pelo titulo: ");
+      gets(palavra);
+
+      fseek(PonteiroLivroArquivo, 0, 0);
+      fread(&livro, sizeof(Livro), 1, PonteiroLivroArquivo);
+      while(!feof(PonteiroLivroArquivo)) {
+        if (strstr(palavra, livro.titulo)) {
+          printf(CYAN "ID: " NORMAL "%d\n", livro.id);
+          printf(CYAN "Titulo: " NORMAL "%s\n", livro.titulo);
+          printf(CYAN "Ano de publicação: " NORMAL "%d\n", livro.anoPublicacao);
+        }
+        
+        fread(&livro, sizeof(Livro), 1, PonteiroLivroArquivo);
+      }
+    } else printf("\nNão foi possivel abrir o arquivo livro."); 
+  } while(PonteiroLivroArquivo != NULL);
+  fclose(PonteiroLivroArquivo);
 }
 
 void TodosOsEmprestimosPorPessoa() {
