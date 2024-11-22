@@ -1120,19 +1120,22 @@ void TodosLivroPorPalavra() {
       printf("Foneça uma palavra para buscar livros pelo titulo: ");
       gets(palavra);
 
-      fseek(PonteiroLivroArquivo, 0, 0);
-      fread(&livro, sizeof(Livro), 1, PonteiroLivroArquivo);
-      while(!feof(PonteiroLivroArquivo)) {
-        if (strstr(palavra, livro.titulo)) {
-          printf(CYAN "ID: " NORMAL "%d\n", livro.id);
-          printf(CYAN "Titulo: " NORMAL "%s\n", livro.titulo);
-          printf(CYAN "Ano de publicação: " NORMAL "%d\n", livro.anoPublicacao);
-        }
-        
+      if (strlen(palavra) >= 1) {
+        fseek(PonteiroLivroArquivo, 0, 0);
         fread(&livro, sizeof(Livro), 1, PonteiroLivroArquivo);
+        while(!feof(PonteiroLivroArquivo)) {
+          if (strcasestr(livro.titulo, palavra)) {
+            printf(CYAN "ID: " NORMAL "%d\n", livro.id);
+            printf(CYAN "Titulo: " NORMAL "%s\n", livro.titulo);
+            printf(CYAN "Ano de publicação: " NORMAL "%d\n", livro.anoPublicacao);
+          }
+          
+          fread(&livro, sizeof(Livro), 1, PonteiroLivroArquivo);
+        }
       }
+
     } else printf("\nNão foi possivel abrir o arquivo livro."); 
-  } while(PonteiroLivroArquivo != NULL);
+  } while(PonteiroLivroArquivo != NULL && strlen(palavra) >= 1);
   fclose(PonteiroLivroArquivo);
 }
 
