@@ -119,6 +119,7 @@ void CadastraLivroAutor (void);
 void tituloMenuLivroAutor();
 void livroAutorMenu();
 void ExclusaoLogicaLivroAutor (void);
+void ExclusaoFisicaTodosDeLivroAutor (void);
 
 // Outras
 int menu(char options[][100], int studentsLogicSize);
@@ -867,7 +868,8 @@ void livroAutorMenu() {
     "Alterar",
     "Consultar",
     "Exibir Todos",
-    "Excluir",
+    "Excluir Relacionamento",
+    "Excluir Todos",
     "Ordenar"
   }; 
 
@@ -890,6 +892,9 @@ void livroAutorMenu() {
         ExclusaoLogicaLivroAutor();
         break;
       case 5:
+      ExclusaoFisicaTodosDeLivroAutor();
+        break;
+      case 6: 
         break;
     }
   } while (opcaoSelecionada != -1);
@@ -1472,6 +1477,28 @@ void ExclusaoFisicaTodosDeLivro (void) {
     remove ("biblioteca/livro.dat");
     rename ("biblioteca/livroTemp.dat", "biblioteca/livro.dat");
     printf ("Alunos Excluidos");
+  }
+}
+
+void ExclusaoFisicaTodosDeLivroAutor (void) {
+  FILE * PtrLivroAutor = fopen ("biblioteca/autorlivro.dat", "rb");
+  LivroAutor AuxLivroAutor;
+
+  if (PtrLivroAutor != NULL) {
+    
+    fread (&AuxLivroAutor, sizeof(LivroAutor), 1, PtrLivroAutor);
+    FILE * PtrLivroAutorTemp = fopen ("biblioteca/autorlivro-temp.dat", "wb");
+
+    while (!feof(PtrLivroAutor)) {
+      if (!AuxLivroAutor.excluido)
+        fwrite (&AuxLivroAutor, sizeof(LivroAutor), 1, PtrLivroAutorTemp);
+      fread (&AuxLivroAutor, sizeof(LivroAutor), 1, PtrLivroAutor);
+    }
+    fclose (PtrLivroAutor);
+    fclose (PtrLivroAutorTemp);
+    remove ("biblioteca/autorlivro.dat");
+    rename ("biblioteca/autorlivro-temp.dat", "autorlivro.dat");
+    printf (CYAN "\nExcluídos com sucesso!!\n" NORMAL);
   }
 }
 

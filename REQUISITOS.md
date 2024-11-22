@@ -39,8 +39,8 @@
 ### Relacionamento Livro Autor @Lucas
 
 - [x] Deve ser possivel cadastrar um livro a um autor
-- [ ] Deve ser possivel excluir um livro a um autor logicamente
-- [ ] Deve ser possivel excluir um livro a um autor fisicamente
+- [x] Deve ser possivel excluir um livro a um autor logicamente
+- [x] Deve ser possivel excluir um livro a um autor fisicamente
 - [ ] Deve ser possivel consultar todos os livros escritos pelos autores
 - [ ] Deve ser possivel associar vários autores a um livro
 - [ ] Deve ser possivel associar vários livros a um autor
