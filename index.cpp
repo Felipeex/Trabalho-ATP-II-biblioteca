@@ -1456,6 +1456,50 @@ void BuscaAutorPelaLetra (void) {
   } while (PtrAutor != NULL && letra != 27);
   fclose (PtrAutor);
 }
+
+void BuscaEmprestimoPorPessoa (void) {
+  FILE * PtrEmprestimo = fopen ("biblioteca/emprestimo.dat", "rb");
+  FILE * PtrPessoa = fopen ("biblioteca/pessoa.dat", "rb");
+  Pessoa AuxPessoa;
+  Emprestimo AuxEmprestimo;
+  int posPessoa, idPessoa, cont;
+
+  if (PtrPessoa != NULL) {
+    do {
+      printf ("\nID da Pessoa: ");
+      scanf ("%d", &idPessoa);
+      if (idPessoa > 0) {
+
+        cont = 0;
+        fseek(PtrPessoa, 0, 0);
+        posPessoa = BuscarPessoaPeloID(PtrPessoa, idPessoa);
+
+        if (posPessoa >= 0) {
+          
+          fseek (PtrEmprestimo, 0, 0);
+          fread (&AuxEmprestimo, sizeof(Emprestimo), 1, PtrEmprestimo);
+          while (!feof(PtrEmprestimo)) {
+            if (idPessoa == AuxEmprestimo.idPessoa && AuxEmprestimo.excluido != 1) {
+
+              printf(CYAN "\nID Emprestimo: " NORMAL "%d\n", AuxEmprestimo.id);
+              printf(CYAN "Data do Empréstimo: " NORMAL "%d/%d/%d\n", AuxEmprestimo.dataEmprestimo.dia, AuxEmprestimo.dataEmprestimo.mes, AuxEmprestimo.dataEmprestimo.ano);
+              printf(CYAN "Data de Devolução: " NORMAL "%d/%d/%d\n", AuxEmprestimo.dataDevolucao.dia,AuxEmprestimo.dataDevolucao.mes,AuxEmprestimo.dataDevolucao.ano);
+              printf (CYAN"ID do Livro: " NORMAL "%d\n", AuxEmprestimo.idLivro);
+              printf (CYAN "Dias Restantes: " NORMAL "%d/%d/%d", AuxEmprestimo.dataDevolucao.dia-AuxEmprestimo.       dataEmprestimo.dia, AuxEmprestimo.dataDevolucao.mes-AuxEmprestimo.dataEmprestimo.mes, AuxEmprestimo.dataDevolucao.ano-AuxEmprestimo.dataEmprestimo.ano);
+              cont++;
+            }
+            fread (&AuxEmprestimo, sizeof(Emprestimo), 1, PtrEmprestimo);
+          }
+          if (!cont) 
+            printf (RED "\nEmpréstimo com id Pessoa " NORMAL "[%d]" RED " não encontrado\n" NORMAL, idPessoa);
+        } else printf (RED "\nPessoa não cadastrada!!\n" NORMAL);
+      } 
+
+    } while (AuxPessoa.id > 0);
+    fclose (PtrEmprestimo);
+    fclose(PtrPessoa);
+  } else (RED "Erro na abertura do arquivi\n" NORMAL);
+}
  
 int menu(char opcoes[][100], int quantidadeDeOpcoes) {
   int opcaoSelecionada = 0;
@@ -1521,7 +1565,7 @@ void tituloMenuPrincipal() {
   printf(" \\____$$ | \\_______|\\__|       \\_______|\\__|  \\__| \\_______|\\__| \\_______|\\__| \\__| \\__| \\_______|\\__|  \\__|  \\____/  \\______/ \n");
   printf("$$\\   $$ |                                                                                                                     \n");
   printf("\\$$$$$$  |                                                                                                                     \n");
-  printf(" \\______|                                                                                                                     \n\n\n\n\n\n\n");
+  printf(" \\______|                                                                                                                     \n\n\n\n\n\n\n\n");
   textcolor(15);
 }
 
